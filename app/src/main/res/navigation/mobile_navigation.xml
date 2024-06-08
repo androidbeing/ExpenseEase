@@ -3,23 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_expenses">
 
     <fragment
-        android:id="@+id/nav_home"
+        android:id="@+id/nav_expenses"
         android:name="com.dolphin.expenseease.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:label="@string/menu_expenses"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.dolphin.expenseease.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_budget"
+        android:name="com.dolphin.expenseease.ui.budget.BudgetFragment"
+        android:label="@string/menu_budget"
+        tools:layout="@layout/fragment_budget" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.dolphin.expenseease.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_reports"
+        android:name="com.dolphin.expenseease.ui.reports.ReportsFragment"
+        android:label="@string/menu_reports"
+        tools:layout="@layout/fragment_reports" />
+
+    <fragment
+        android:id="@+id/nav_reminders"
+        android:name="com.dolphin.expenseease.ui.reminders.ReminderFragment"
+        android:label="@string/menu_reminders"
+        tools:layout="@layout/fragment_reminder" />
+
+    <fragment
+        android:id="@+id/nav_backup"
+        android:name="com.dolphin.expenseease.ui.backup.BackupFragment"
+        android:label="@string/menu_backup"
+        tools:layout="@layout/fragment_backup" />
 </navigation>

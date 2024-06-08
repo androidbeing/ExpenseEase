@@ -1,4 +1,4 @@
-package com.dolphin.expenseease.ui.gallery
+package com.dolphin.expenseease.ui.reports
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,12 +8,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class GalleryViewModel @Inject constructor(
+class ReportsViewModel @Inject constructor(
     private val repository: ExpenseRepository
 ) : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is gallery Fragment"
+        value = "This is Reports Fragment"
     }
     val text: LiveData<String> = _text
 }
