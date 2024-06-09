@@ -7,6 +7,10 @@ plugins {
 }
 
 android {
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
+
     namespace 'com.dolphin.expenseease'
     compileSdk 34
 
@@ -26,8 +30,27 @@ android {
         }
     }
 
-    buildTypes {
+    signingConfigs {
+        debug {
+            storeFile file("D:\\keystores\\expense-ease-keystore.jks")
+            storePassword "pNX@wBSW4Z"
+            keyAlias "expense-ease"
+            keyPassword "pNX@wBSW4Z"
+        }
         release {
+            storeFile file("D:\\keystores\\expense-ease-keystore.jks")
+            storePassword "pNX@wBSW4Z"
+            keyAlias "expense-ease"
+            keyPassword "pNX@wBSW4Z"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -53,7 +76,6 @@ hilt {
 }
 
 dependencies {
-
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
@@ -71,7 +93,7 @@ dependencies {
     // Room
     implementation(libs.room.runtime)
     kapt(libs.room.compiler)
-    implementation(libs.room.ktx) // Optional - Kotlin Extensions and Coroutines
+    implementation(libs.room.ktx)
 
     // Retrofit
     implementation(libs.retrofit)
@@ -79,6 +101,12 @@ dependencies {
 
     // Gson
     implementation(libs.gson)
+
+    //Google API Client
+    implementation(libs.play.services.auth)
+    implementation(libs.google.api.client.android)
+    implementation(libs.google.api.client.jackson2)
+    implementation(libs.googleSheetsApi)
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit

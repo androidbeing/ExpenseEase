@@ -1,6 +1,6 @@
 [versions]
 agp = "8.4.0"
-kotlin = "1.9.0"
+kotlin = "2.0.0"
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -16,8 +16,13 @@ hilt = "2.51.1"
 hiltNavigation = "1.1.0"
 room = "2.6.1"
 retrofit = "2.9.0"
-gson = "2.10"
+gson = "2.10.1"
 kspVersion="2.0.0-1.0.21"
+googleApiClient = "2.0.0"
+playServicesAuth = "20.4.1"
+googleSheetsApi = "v4-rev20220927-2.0.0"
+google-api-client-jackson2 = "1.35.2"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +49,10 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
+google-api-client-android = { group = "com.google.api-client", name = "google-api-client-android", version.ref = "googleApiClient" }
+google-api-client-jackson2 = { group = "com.google.api-client", name = "google-api-client-jackson2", version.ref = "google-api-client-jackson2" }
+googleSheetsApi = {  module = "com.google.apis:google-api-services-sheets", version.ref = "googleSheetsApi" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
