@@ -1,6 +1,6 @@
 package com.dolphin.expenseease.data.di
 
-import com.dolphin.expenseease.data.db.Expense
+import com.dolphin.expenseease.data.db.expense.Expense
 import retrofit2.http.GET
 
 interface ExpenseService {

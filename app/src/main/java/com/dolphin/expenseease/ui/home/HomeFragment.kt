@@ -1,14 +1,13 @@
 package com.dolphin.expenseease.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.dolphin.expenseease.data.db.Expense
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.dolphin.expenseease.data.db.expense.Expense
 import com.dolphin.expenseease.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
@@ -17,35 +16,44 @@ import java.util.Date
 class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
     private var _binding: FragmentHomeBinding? = null
+    private lateinit var expenseAdapter: ExpenseAdapter
+    private lateinit var expenseList: MutableList<Expense>
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        expenseList = mutableListOf()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        val textView: TextView = binding.textHome
-        viewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-
-        binding.btnAddExpense.setOnClickListener {
+        for (i in 1..10) {
             addExpense()
         }
+        initViews()
         return root
+    }
+
+    private fun initViews() {
+        expenseAdapter = ExpenseAdapter(requireContext(), expenseList)
+        binding.recyclerExpenses.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerExpenses.adapter = expenseAdapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.allExpenses.observe(viewLifecycleOwner) {
-            Log.i("AAA", it.toString())
+            expenseList.clear()
+            expenseList.addAll(it)
+            expenseAdapter.notifyDataSetChanged()
         }
     }
 

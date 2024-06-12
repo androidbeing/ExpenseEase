@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.dolphin.expenseease.databinding.FragmentBackupBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BackupFragment: Fragment() {
     private var _binding: FragmentBackupBinding? = null
 

@@ -1,4 +1,4 @@
-package com.dolphin.expenseease.data.db
+package com.dolphin.expenseease.data.db.expense
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

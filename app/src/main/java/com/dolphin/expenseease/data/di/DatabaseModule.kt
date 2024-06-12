@@ -4,7 +4,9 @@ import android.app.Application
 import dagger.Module
 import androidx.room.Room
 import com.dolphin.expenseease.data.db.AppDatabase
-import com.dolphin.expenseease.data.db.ExpenseDao
+import com.dolphin.expenseease.data.db.budget.BudgetDao
+import com.dolphin.expenseease.data.db.expense.ExpenseDao
+import com.dolphin.expenseease.data.db.reminder.ReminderDao
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -27,5 +29,15 @@ object DatabaseModule {
     @Provides
     fun provideExpenseDao(database: AppDatabase): ExpenseDao {
         return database.expenseDao()
+    }
+
+    @Provides
+    fun provideBudgetDao(database: AppDatabase): BudgetDao {
+        return database.budgetDao()
+    }
+
+    @Provides
+    fun provideReminderDao(database: AppDatabase): ReminderDao {
+        return database.reminderDao()
     }
 }

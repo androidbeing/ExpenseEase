@@ -9,7 +9,8 @@
 
     <string name="menu_expenses">Expenses</string>
     <string name="menu_budget">Budget</string>
-    <string name="menu_reports">Reports</string>
+    <string name="menu_wallet">My Wallet</string>
+    <string name="menu_reports">Insights</string>
     <string name="menu_reminders">Reminders</string>
     <string name="menu_backup">Backup</string>
 </resources>
