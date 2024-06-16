@@ -35,9 +35,6 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        for (i in 1..10) {
-            addExpense()
-        }
         initViews()
         return root
     }
@@ -54,15 +51,29 @@ class HomeFragment : Fragment() {
             expenseList.clear()
             expenseList.addAll(it)
             expenseAdapter.notifyDataSetChanged()
+            setView(expenseList.isNotEmpty())
         }
+        setView(expenseList.isNotEmpty())
+    }
+
+    private fun setView(hasItems: Boolean) {
+        binding.textNoItems.visibility = if (hasItems) View.GONE else View.VISIBLE
+        binding.recyclerExpenses.visibility = if (hasItems) View.VISIBLE else View.GONE
     }
 
     private fun addExpense() {
         // Create a new Expense object
-        val expense = Expense(amount = 100.0, type = "Food", notes = "Lunch", date = "07/06/2024", createdAt = Date().time, updatedAt = Date().time)
+        val expense = Expense(
+            amount = 100.0,
+            type = "Food",
+            notes = "Lunch",
+            date = "07/06/2024",
+            createdAt = Date().time,
+            updatedAt = Date().time
+        )
 
         // Insert the expense into the database
-        viewModel.insertExpense(expense)
+        viewModel.addExpense(expense)
     }
 
     override fun onDestroyView() {

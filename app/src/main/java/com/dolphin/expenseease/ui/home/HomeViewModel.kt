@@ -17,7 +17,7 @@ class HomeViewModel @Inject constructor(
 
     val allExpenses = repository.getAllExpenses()
 
-    fun insertExpense(expense: Expense) = viewModelScope.launch {
+    fun addExpense(expense: Expense) = viewModelScope.launch {
         val data = withContext(Dispatchers.IO) {
             repository.insertExpense(expense)
         }

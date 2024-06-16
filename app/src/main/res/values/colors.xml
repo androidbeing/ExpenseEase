@@ -11,4 +11,5 @@
 
     <color name="milk_white">#F5F5F5</color>
     <color name="dark">#000000</color>
+    <color name="colorPrimaryText">#373A40</color>
 </resources>

@@ -13,4 +13,23 @@
     <string name="menu_reports">Insights</string>
     <string name="menu_reminders">Reminders</string>
     <string name="menu_backup">Backup</string>
+    <string name="no_items_found">No items found</string>
+    <string name="lbl_loading">Loading</string>
+    <string name="rupee_symbol">\u20B9 %s</string>
+
+    <string-array name="expense_types" >
+        <item>Food</item>
+        <item>Clothes</item>
+        <item>Fuel</item>
+        <item>Transport</item>
+        <item>Education</item>
+        <item>Groceries</item>
+        <item>Debt Payment</item>
+        <item>Gift</item>
+        <item>Donation</item>
+        <item>Health</item>
+        <item>Insurance</item>
+        <item>Vehicles</item>
+        <item>Others</item>
+    </string-array>
 </resources>
