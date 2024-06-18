@@ -80,7 +80,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_expenses,
                 R.id.nav_wallet,
                 R.id.nav_budget,
-                R.id.nav_budget,
                 R.id.nav_reports,
                 R.id.nav_reminders,
                 R.id.nav_backup

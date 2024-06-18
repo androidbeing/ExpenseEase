@@ -1,15 +1,12 @@
 package com.dolphin.expenseease.ui.home
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import com.dolphin.expenseease.app.ExpenseEaseApplication
 import com.dolphin.expenseease.data.db.expense.Expense
-import com.dolphin.expenseease.data.db.expense.ExpenseDao
 import com.dolphin.expenseease.databinding.SheetAddExpenseBinding
 import com.dolphin.expenseease.listeners.AddExpenseListener
 import com.dolphin.expenseease.utils.DateUtils.getTodayDate

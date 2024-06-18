@@ -1,112 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_screen_curve">
+    android:background="@android:color/transparent">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/txtTitle"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/purple_200"
-        android:fontFamily="@font/open_sans_semibold"
-        android:gravity="center"
-        android:text="Add Expense"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/txtAmount"
-        focusability="true"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:background="@drawable/bg_drawable"
-        android:fontFamily="@font/open_sans_semibold"
-        android:hint="Amount"
-        android:inputType="numberDecimal"
-        android:maxLength="10"
-        android:padding="16dp"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+        android:background="@drawable/bg_bottom_sheet">
 
-    <androidx.appcompat.widget.AppCompatSpinner
-        android:id="@+id/txtExpenseType"
-        style="@style/SpinnerWithCustomFont"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:background="@drawable/bg_drawable"
-        android:drawSelectorOnTop="true"
-        android:entries="@array/expense_types"
-        android:inputType="numberDecimal"
-        android:maxLength="100"
-        android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/txtAmount"
-        app:layout_constraintTop_toBottomOf="@+id/txtAmount" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_bottom_sheet"
+            android:backgroundTint="@color/purple_200"
+            android:fontFamily="@font/open_sans_semibold"
+            android:gravity="center"
+            android:text="Add Expense"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/txtExpenseNotes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:background="@drawable/bg_drawable"
-        android:drawSelectorOnTop="true"
-        android:entries="@array/expense_types"
-        android:hint="Notes"
-        android:inputType="textNoSuggestions"
-        android:lines="3"
-        android:maxLength="200"
-        android:maxLines="3"
-        android:padding="16dp"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/txtAmount"
-        app:layout_constraintTop_toBottomOf="@+id/txtExpenseType" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txtAmount"
+            focusability="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_drawable"
+            android:fontFamily="@font/open_sans_semibold"
+            android:hint="Amount"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
+            android:padding="12dp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnCancel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:text="Cancel"
-        app:backgroundTint="@color/teal_700"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtExpenseNotes" />
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/txtExpenseType"
+            style="@style/SpinnerWithCustomFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:background="@drawable/bg_drawable"
+            android:drawSelectorOnTop="true"
+            android:entries="@array/expense_types"
+            android:inputType="numberDecimal"
+            android:maxLength="100"
+            android:padding="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/txtAmount"
+            app:layout_constraintTop_toBottomOf="@+id/txtAmount" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnAdd"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Add"
-        app:layout_constraintBottom_toBottomOf="@+id/btnCancel"
-        app:layout_constraintEnd_toEndOf="@+id/txtExpenseNotes"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/txtExpenseNotes" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txtExpenseNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:background="@drawable/bg_drawable"
+            android:drawSelectorOnTop="true"
+            android:entries="@array/expense_types"
+            android:hint="Notes"
+            android:inputType="textNoSuggestions"
+            android:lines="3"
+            android:maxLength="200"
+            android:maxLines="3"
+            android:padding="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/txtAmount"
+            app:layout_constraintTop_toBottomOf="@+id/txtExpenseType" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:text="Cancel"
+            app:backgroundTint="@color/teal_700"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtExpenseNotes" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnAdd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Add"
+            app:layout_constraintBottom_toBottomOf="@+id/btnCancel"
+            app:layout_constraintEnd_toEndOf="@+id/txtExpenseNotes"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/txtExpenseNotes" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
