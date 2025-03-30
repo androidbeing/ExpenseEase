@@ -7,6 +7,7 @@ import com.dolphin.expenseease.data.db.AppDatabase
 import com.dolphin.expenseease.data.db.budget.BudgetDao
 import com.dolphin.expenseease.data.db.expense.ExpenseDao
 import com.dolphin.expenseease.data.db.reminder.ReminderDao
+import com.dolphin.expenseease.data.db.wallet.MyWalletDao
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
@@ -39,5 +40,10 @@ object DatabaseModule {
     @Provides
     fun provideReminderDao(database: AppDatabase): ReminderDao {
         return database.reminderDao()
+    }
+
+    @Provides
+    fun provideWalletDao(database: AppDatabase): MyWalletDao {
+        return database.walletDao()
     }
 }

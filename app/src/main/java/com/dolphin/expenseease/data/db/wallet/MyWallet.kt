@@ -1,14 +1,15 @@
-package com.dolphin.expenseease.data.db.budget
+package com.dolphin.expenseease.data.db.wallet
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-@Entity(tableName = "budget")
-data class Budget(
+
+@Entity(tableName = "my_wallet")
+data class MyWallet(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo(name = "type") val type: String,
-    @ColumnInfo(name = "amount") val amount: Double,
-    @ColumnInfo(name = "month_year") val monthYear: String,
+    @ColumnInfo(name = "balance") val balance: Double,
+    @ColumnInfo(name = "added_amount") val addedAmount: Double,
+    @ColumnInfo(name = "notes") val notes: String,
     @ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "updated_at") val updatedAt: Long = System.currentTimeMillis()
 )

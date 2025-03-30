@@ -1,6 +1,7 @@
 package com.dolphin.expenseease.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +10,14 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dolphin.expenseease.data.db.expense.Expense
 import com.dolphin.expenseease.databinding.FragmentHomeBinding
+import com.dolphin.expenseease.listeners.AddExpenseListener
+import com.dolphin.expenseease.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
     private var _binding: FragmentHomeBinding? = null
     private lateinit var expenseAdapter: ExpenseAdapter
     private lateinit var expenseList: MutableList<Expense>
@@ -39,6 +42,29 @@ class HomeFragment : Fragment() {
         return root
     }
 
+    private fun initObservers() {
+        viewModel.allExpenses.observe(viewLifecycleOwner) {
+            expenseList.clear()
+            expenseList.addAll(it)
+            expenseAdapter.notifyDataSetChanged()
+            setView(expenseList.isNotEmpty())
+            
+        }
+
+        binding.fab.setOnClickListener {
+            addExpenseDialog()
+        }
+    }
+
+    private fun addExpenseDialog() {
+        val addExpenseBottomSheet = AddExpenseSheet(object : AddExpenseListener {
+            override fun onExpenseAdd(expense: Expense) {
+                viewModel.addExpense(expense)
+            }
+        })
+        addExpenseBottomSheet.show(childFragmentManager, AddExpenseSheet.TAG)
+    }
+
     private fun initViews() {
         expenseAdapter = ExpenseAdapter(requireContext(), expenseList)
         binding.recyclerExpenses.layoutManager = LinearLayoutManager(requireContext())
@@ -47,12 +73,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.allExpenses.observe(viewLifecycleOwner) {
-            expenseList.clear()
-            expenseList.addAll(it)
-            expenseAdapter.notifyDataSetChanged()
-            setView(expenseList.isNotEmpty())
-        }
+        initObservers()
         setView(expenseList.isNotEmpty())
     }
 

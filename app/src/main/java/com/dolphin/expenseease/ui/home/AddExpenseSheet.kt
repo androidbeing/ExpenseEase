@@ -26,7 +26,7 @@ class AddExpenseSheet(private val listener: AddExpenseListener) : BottomSheetDia
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
+        inflater: LayoutInflater,   
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {

@@ -8,10 +8,13 @@ import com.dolphin.expenseease.data.db.expense.Expense
 import com.dolphin.expenseease.data.db.expense.ExpenseDao
 import com.dolphin.expenseease.data.db.reminder.Reminder
 import com.dolphin.expenseease.data.db.reminder.ReminderDao
+import com.dolphin.expenseease.data.db.wallet.MyWallet
+import com.dolphin.expenseease.data.db.wallet.MyWalletDao
 
-@Database(entities = [Expense::class, Budget::class, Reminder::class], version = 1)
+@Database(entities = [Expense::class, Budget::class, Reminder::class, MyWallet::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun expenseDao(): ExpenseDao
     abstract fun budgetDao(): BudgetDao
     abstract fun reminderDao(): ReminderDao
+    abstract fun walletDao(): MyWalletDao
 }

@@ -60,7 +60,7 @@ class BudgetFragment : Fragment() {
 
     private fun addBudget() {
         // Create a new Budget object
-        val budget = Budget(amount = 100.0, type = "Food", month = "June", createdAt = Date().time)
+        val budget = Budget(amount = 100.0, type = "Food", monthYear = "Jun 2024", createdAt = Date().time)
         // Insert the budget into the database
         viewModel.insertBudget(budget)
     }
