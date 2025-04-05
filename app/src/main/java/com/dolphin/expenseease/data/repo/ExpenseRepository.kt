@@ -40,6 +40,8 @@ class ExpenseRepository @Inject constructor(
 
     fun getAllWallets(): LiveData<List<MyWallet>> = walletDao.getAll()
 
+    fun getLatestWallet(): LiveData<MyWallet> = walletDao.getLatestBalance()
+
     suspend fun insertWallet(wallet: MyWallet) = walletDao.insert(wallet)
 
     suspend fun deleteWallet(wallet: MyWallet) = walletDao.delete(wallet)

@@ -23,6 +23,9 @@ interface MyWalletDao {
     @Query("UPDATE my_wallet SET balance = :balance WHERE id = :id")
     fun updateBalanceById(id: Int, balance: Double)
 
+    @Query("SELECT * FROM my_wallet ORDER BY id DESC LIMIT 1")
+    fun getLatestBalance(): LiveData<MyWallet>
+
     @Delete
     fun delete(wallet: MyWallet)
 }

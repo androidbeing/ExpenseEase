@@ -19,7 +19,7 @@
             android:backgroundTint="@color/purple_200"
             android:fontFamily="@font/open_sans_semibold"
             android:gravity="center"
-            android:text="@string/add_expense"
+            android:text="@string/add_balance"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,23 +46,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
 
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/txtExpenseType"
-            style="@style/SpinnerWithCustomFont"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:background="@drawable/bg_drawable"
-            android:drawSelectorOnTop="true"
-            android:entries="@array/expense_types"
-            android:inputType="numberDecimal"
-            android:maxLength="100"
-            android:padding="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/txtAmount"
-            app:layout_constraintTop_toBottomOf="@+id/txtAmount" />
-
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txtExpenseNotes"
             android:layout_width="match_parent"
@@ -71,7 +54,7 @@
             android:background="@drawable/bg_drawable"
             android:drawSelectorOnTop="true"
             android:entries="@array/expense_types"
-            android:hint="@string/notes"
+            android:hint="Notes"
             android:inputType="textNoSuggestions"
             android:lines="3"
             android:maxLength="200"
@@ -81,7 +64,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/txtAmount"
-            app:layout_constraintTop_toBottomOf="@+id/txtExpenseType" />
+            app:layout_constraintTop_toBottomOf="@+id/txtAmount" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
