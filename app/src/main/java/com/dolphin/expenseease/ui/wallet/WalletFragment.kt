@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dolphin.expenseease.data.db.wallet.MyWallet
 import com.dolphin.expenseease.databinding.FragmentWalletBinding
 import com.dolphin.expenseease.listeners.AddBalanceListener
@@ -22,6 +23,8 @@ class WalletFragment : Fragment() {
     private val viewModel: WalletViewModel by viewModels()
     private var _binding: FragmentWalletBinding? = null
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private lateinit var balanceAdapter: BalanceAdapter
+    private lateinit var balanceList: MutableList<MyWallet>
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -35,12 +38,19 @@ class WalletFragment : Fragment() {
 
         _binding = FragmentWalletBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        initViews()
+        return root
+    }
+
+    private fun initViews() {
+        balanceList = mutableListOf()
+        balanceAdapter = BalanceAdapter(requireContext(), balanceList)
+        binding.recyclerBalance.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerBalance.adapter = balanceAdapter
 
         binding.fab.setOnClickListener {
             addBalanceDialog()
         }
-
-        return root
     }
 
     private fun addBalanceDialog() {
@@ -65,9 +75,18 @@ class WalletFragment : Fragment() {
     }
 
     private fun initObservers() {
-        viewModel.getLatestBalance().observe(viewLifecycleOwner) { wallet ->
-            Log.i("AAA", "Balance Avl: ${Gson().toJson(wallet)}")
+        viewModel.allBalances.observe(viewLifecycleOwner) { balances ->
+            Log.i("AAA", "Balance Avl: ${Gson().toJson(balances)}")
+            balanceList.clear()
+            balanceList.addAll(balances)
+            balanceAdapter.notifyDataSetChanged()
+            setView(balanceList.isNotEmpty())
         }
+    }
+
+    private fun setView(hasItems: Boolean) {
+        binding.txtNoItems.visibility = if (hasItems) View.GONE else View.VISIBLE
+        binding.recyclerBalance.visibility = if (hasItems) View.VISIBLE else View.GONE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

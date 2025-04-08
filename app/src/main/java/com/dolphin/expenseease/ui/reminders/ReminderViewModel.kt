@@ -17,7 +17,7 @@ class ReminderViewModel@Inject constructor(
 
     val allReminders = repository.getAllReminders()
 
-    fun insertReminder(reminder: Reminder) = viewModelScope.launch {
+    fun addReminder(reminder: Reminder) = viewModelScope.launch {
         val data = withContext(Dispatchers.IO) {
             repository.insertReminder(reminder)
         }

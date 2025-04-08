@@ -15,6 +15,8 @@ import javax.inject.Inject
 class WalletViewModel @Inject constructor(
     private val repository: ExpenseRepository
 ) : ViewModel() {
+    val allBalances = repository.getAllWallets()
+
     fun addBalance(wallet: MyWallet) = viewModelScope.launch {
         val data = withContext(Dispatchers.IO) {
             repository.insertWallet(wallet)

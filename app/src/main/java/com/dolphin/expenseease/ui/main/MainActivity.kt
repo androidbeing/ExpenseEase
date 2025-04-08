@@ -8,21 +8,26 @@ import android.view.Menu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.dolphin.expenseease.R
+import com.dolphin.expenseease.data.db.AppDatabase
 import com.dolphin.expenseease.databinding.ActivityMainBinding
 import com.dolphin.expenseease.utils.ApiEndpoint.GOOGLE_AUTH_URL
-import com.dolphin.expenseease.utils.GoogleSpreadSheetHelper.syncToSpreadSheet
+import com.dolphin.expenseease.utils.GoogleSpreadSheetHelper
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -35,7 +40,28 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val data: Intent? = result.data
             if (result.resultCode == Activity.RESULT_OK) {
-                syncToSpreadSheet(applicationContext, data!!)
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        try {
+                            val db = AppDatabase.getInstance(applicationContext)
+                            val expenses = db.expenseDao().getAll()
+                            val budgets = db.budgetDao().getAll()
+                            val wallets = db.myWalletDao().getAll()
+                            val reminders = db.reminderDao().getAll()
+
+                            GoogleSpreadSheetHelper.syncDataToSpreadSheet(
+                                applicationContext,
+                                expenses.value!!,
+                                budgets.value!!,
+                                wallets.value!!,
+                                reminders.value!!
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+                //syncToSpreadSheet(applicationContext, data!!)
             } else if (result.resultCode == Activity.RESULT_CANCELED) {
                 Log.i("AAA", "Result Cancelled...")
             }
@@ -86,6 +112,15 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        // Trigger the WorkManager to sync data
+        //val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().build()
+        //WorkManager.getInstance(this).enqueue(syncWorkRequest)
+    }
+
+    private fun syncInSheets() {
+        val signInClient = getGoogleClient()
+        startForResult.launch(signInClient.signInIntent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

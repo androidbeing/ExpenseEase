@@ -9,15 +9,20 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dolphin.expenseease.data.db.reminder.Reminder
 import com.dolphin.expenseease.databinding.FragmentReminderBinding
+import com.dolphin.expenseease.listeners.AddReminderListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Date
 
 @AndroidEntryPoint
-class ReminderFragment: Fragment() {
+class ReminderFragment : Fragment() {
     private val viewModel: ReminderViewModel by viewModels()
     private var _binding: FragmentReminderBinding? = null
     private lateinit var reminderAdapter: ReminderAdapter
     private lateinit var reminderList: MutableList<Reminder>
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -36,9 +41,6 @@ class ReminderFragment: Fragment() {
 
         _binding = FragmentReminderBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        for (i in 1..10) {
-            addReminder()
-        }
         initViews()
         return root
     }
@@ -47,6 +49,27 @@ class ReminderFragment: Fragment() {
         reminderAdapter = ReminderAdapter(requireContext(), reminderList)
         binding.recyclerReminders.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerReminders.adapter = reminderAdapter
+
+        binding.fab.setOnClickListener {
+            addReminderDialog()
+        }
+    }
+
+    private fun addReminderDialog() {
+        val addReminderBottomSheet = AddReminderSheet(object : AddReminderListener {
+            override fun onReminderAdd(notes: String, monthYear: String) {
+                coroutineScope.launch {
+                    val reminder = Reminder(
+                        notes = notes,
+                        dateTime = monthYear,
+                        createdAt = Date().time,
+                        updatedAt = Date().time
+                    )
+                    viewModel.addReminder(reminder)
+                }
+            }
+        })
+        addReminderBottomSheet.show(childFragmentManager, AddReminderSheet.TAG)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,12 +78,13 @@ class ReminderFragment: Fragment() {
             reminderList.clear()
             reminderList.addAll(it)
             reminderAdapter.notifyDataSetChanged()
+            setView(reminderList.isNotEmpty())
         }
     }
 
-    private fun addReminder() {
-        val reminder = Reminder( notes = "Lunch", dateTime = "07/06/2024 05:00", createdAt = Date().time, updatedAt = Date().time)
-        viewModel.insertReminder(reminder)
+    private fun setView(hasItems: Boolean) {
+        binding.textNoItems.visibility = if (hasItems) View.GONE else View.VISIBLE
+        binding.recyclerReminders.visibility = if (hasItems) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {

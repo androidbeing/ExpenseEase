@@ -31,6 +31,7 @@ class ExpenseAdapter(private val context: Context, private val list: MutableList
             view.txtExpense.text = expense.notes
             view.textType.text = expense.type
             view.textDateTime.text = context.getRelativeTimeString(expense.createdAt)
+            view.txtSpentOn.text = expense.date
             view.textAmount.text = context.getString(R.string.rupee_symbol, "${expense.amount}")
         }
     }

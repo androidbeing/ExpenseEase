@@ -9,7 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dolphin.expenseease.data.db.budget.Budget
 import com.dolphin.expenseease.databinding.FragmentBudgetBinding
+import com.dolphin.expenseease.listeners.AddBudgetListener
+import com.dolphin.expenseease.ui.wallet.AddBalanceSheet
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Date
 
 @AndroidEntryPoint
@@ -18,6 +23,7 @@ class BudgetFragment : Fragment() {
     private var _binding: FragmentBudgetBinding? = null
     private lateinit var budgetAdapter: BudgetAdapter
     private lateinit var budgetList: MutableList<Budget>
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -33,12 +39,8 @@ class BudgetFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentBudgetBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        for (i in 1..10) {
-            addBudget()
-        }
         initViews()
         return root
     }
@@ -47,6 +49,31 @@ class BudgetFragment : Fragment() {
         budgetAdapter = BudgetAdapter(requireContext(), budgetList)
         binding.recyclerBudgets.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerBudgets.adapter = budgetAdapter
+
+        binding.fab.setOnClickListener {
+            addBudgetDialog()
+        }
+    }
+
+    private fun addBudgetDialog() {
+        val addBudgetBottomSheet = AddBudgetSheet(object : AddBudgetListener {
+            override fun onBudgetAdd(
+                budgetType: String,
+                allocatedAmount: Double,
+                monthYear: String
+            ) {
+                coroutineScope.launch {
+                    val budget = Budget(
+                        amount = allocatedAmount,
+                        type = budgetType,
+                        monthYear = monthYear,
+                        createdAt = Date().time
+                    )
+                    viewModel.addBudget(budget)
+                }
+            }
+        })
+        addBudgetBottomSheet.show(childFragmentManager, AddBalanceSheet.TAG)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,14 +82,13 @@ class BudgetFragment : Fragment() {
             budgetList.clear()
             budgetList.addAll(it)
             budgetAdapter.notifyDataSetChanged()
+            setView(budgetList.isNotEmpty())
         }
     }
 
-    private fun addBudget() {
-        // Create a new Budget object
-        val budget = Budget(amount = 100.0, type = "Food", monthYear = "Jun 2024", createdAt = Date().time)
-        // Insert the budget into the database
-        viewModel.insertBudget(budget)
+    private fun setView(hasItems: Boolean) {
+        binding.textNoItems.visibility = if (hasItems) View.GONE else View.VISIBLE
+        binding.recyclerBudgets.visibility = if (hasItems) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {

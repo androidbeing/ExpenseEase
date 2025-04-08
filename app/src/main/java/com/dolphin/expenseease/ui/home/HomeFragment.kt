@@ -1,7 +1,6 @@
 package com.dolphin.expenseease.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import com.dolphin.expenseease.databinding.FragmentHomeBinding
 import com.dolphin.expenseease.listeners.AddExpenseListener
 import com.dolphin.expenseease.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Date
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -48,7 +46,6 @@ class HomeFragment : Fragment() {
             expenseList.addAll(it)
             expenseAdapter.notifyDataSetChanged()
             setView(expenseList.isNotEmpty())
-            
         }
 
         binding.fab.setOnClickListener {
@@ -74,27 +71,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
-        setView(expenseList.isNotEmpty())
     }
 
     private fun setView(hasItems: Boolean) {
         binding.textNoItems.visibility = if (hasItems) View.GONE else View.VISIBLE
         binding.recyclerExpenses.visibility = if (hasItems) View.VISIBLE else View.GONE
-    }
-
-    private fun addExpense() {
-        // Create a new Expense object
-        val expense = Expense(
-            amount = 100.0,
-            type = "Food",
-            notes = "Lunch",
-            date = "07/06/2024",
-            createdAt = Date().time,
-            updatedAt = Date().time
-        )
-
-        // Insert the expense into the database
-        viewModel.addExpense(expense)
     }
 
     override fun onDestroyView() {

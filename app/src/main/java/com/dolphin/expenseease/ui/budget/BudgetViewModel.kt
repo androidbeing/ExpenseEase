@@ -23,4 +23,10 @@ class BudgetViewModel @Inject constructor(
             repository.insertBudget(budget)
         }
     }
+
+    fun addBudget(budget: Budget) = viewModelScope.launch {
+        val data = withContext(Dispatchers.IO) {
+            repository.insertBudget(budget)
+        }
+    }
 }

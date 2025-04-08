@@ -14,12 +14,12 @@
         android:layout_margin="8dp">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textType"
+            android:id="@+id/textNotes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
+            android:fontFamily="@font/open_sans_semibold"
             android:maxLength="100"
-            android:text="Transport"
+            android:text="Adding for Construction"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,27 +29,32 @@
             android:id="@+id/textAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans_semibold"
-            android:maxLength="10"
-            android:text="INR 15000000"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/open_sans"
+            android:maxLength="5"
+            android:visibility="visible"
+            android:text="10000"
             android:textAlignment="textEnd"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="@+id/textType"
+            android:textSize="15sp"
+            app:fontFamily="@font/open_sans_semibold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/textType" />
+            app:layout_constraintTop_toTopOf="@+id/textNotes" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textDateTime"
+            android:id="@+id/textCreatedAt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans_italic"
             android:maxLength="50"
-            android:text="A month ago"
+            android:text="A week ago"
             android:textAlignment="textStart"
-            android:textSize="14sp"
+            android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintStart_toStartOf="@+id/textType"
-            app:layout_constraintTop_toBottomOf="@+id/textType" />
+            app:layout_constraintStart_toStartOf="@+id/textNotes"
+            app:layout_constraintTop_toBottomOf="@+id/textNotes" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"

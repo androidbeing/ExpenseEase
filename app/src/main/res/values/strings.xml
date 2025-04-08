@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">ExpenseEase</string>
+    <string name="app_name">BudgetBuddy</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">ExpenseEase</string>
-    <string name="nav_header_subtitle">support@expenseease.com</string>
+    <string name="nav_header_title">BudgetBuddy</string>
+    <string name="nav_header_subtitle">support@budgetbuddy.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -22,6 +22,12 @@
     <string name="add">Add</string>
     <string name="add_expense">Add Expense</string>
     <string name="notes">Notes</string>
+    <string name="enter_amount">Please enter an amount</string>
+    <string name="add_budget">Add Budget</string>
+    <string name="month_year">Month/Year</string>
+    <string name="lbl_when">When</string>
+    <string name="add_reminder">Add Reminder</string>
+    <string name="fill_all_fields">Fill all fields</string>
 
     <string-array name="expense_types" >
         <item>Food</item>

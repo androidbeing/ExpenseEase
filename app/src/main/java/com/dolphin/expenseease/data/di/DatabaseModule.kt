@@ -44,6 +44,6 @@ object DatabaseModule {
 
     @Provides
     fun provideWalletDao(database: AppDatabase): MyWalletDao {
-        return database.walletDao()
+        return database.myWalletDao()
     }
 }

@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans_semibold"
-            android:maxLength="10"
+            android:maxLength="100"
             android:text="Fuel Filling for Car"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"

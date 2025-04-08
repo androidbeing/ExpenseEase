@@ -1,6 +1,8 @@
 package com.dolphin.expenseease.data.db
 
+import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.dolphin.expenseease.data.db.budget.Budget
 import com.dolphin.expenseease.data.db.budget.BudgetDao
@@ -11,10 +13,28 @@ import com.dolphin.expenseease.data.db.reminder.ReminderDao
 import com.dolphin.expenseease.data.db.wallet.MyWallet
 import com.dolphin.expenseease.data.db.wallet.MyWalletDao
 
-@Database(entities = [Expense::class, Budget::class, Reminder::class, MyWallet::class], version = 1)
+
+@Database(entities = [Expense::class, Budget::class, MyWallet::class, Reminder::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun expenseDao(): ExpenseDao
     abstract fun budgetDao(): BudgetDao
+    abstract fun myWalletDao(): MyWalletDao
     abstract fun reminderDao(): ReminderDao
-    abstract fun walletDao(): MyWalletDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getInstance(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "expense_database"
+                ).build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
 }

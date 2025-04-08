@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp">
 
         <com.google.android.material.textview.MaterialTextView
@@ -18,9 +18,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:maxLength="100"
             android:text="Bought a BMW Car"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/purple_200"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,10 +31,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans"
-            android:maxLength="10"
+            android:maxLength="100"
             android:text="Transport"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@+id/txtExpense"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/txtExpense"
             app:layout_constraintTop_toBottomOf="@+id/txtExpense" />
 
@@ -45,9 +47,9 @@
             android:text="INR 15000000"
             android:textAlignment="textEnd"
             android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="@+id/textType"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/textType" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textDateTime"
@@ -62,13 +64,23 @@
             app:layout_constraintStart_toStartOf="@+id/textType"
             app:layout_constraintTop_toBottomOf="@+id/textType" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txtSpentOn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_semibold"
+            android:maxLength="50"
+            android:text="08/04/2025"
+            android:textAlignment="textStart"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent=".5" />
-
-
+            app:layout_constraintGuide_percent=".7" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
