@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    android:alpha="0.9">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,36 +29,54 @@
 
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/txtAmount"
+            android:id="@+id/txtDate"
             focusability="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_margin="12dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_drawable"
-            android:fontFamily="@font/open_sans_semibold"
+            android:hint="@string/date"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
+            android:padding="12dp"
+            android:focusable="false"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/txtAmount"
+            focusability="true"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="12dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_drawable"
             android:hint="@string/amount"
             android:inputType="numberDecimal"
             android:maxLength="10"
             android:padding="12dp"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
+            android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/txtDate" />
 
         <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/txtExpenseType"
             style="@style/SpinnerWithCustomFont"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_margin="12dp"
             android:background="@drawable/bg_drawable"
             android:drawSelectorOnTop="true"
             android:entries="@array/expense_types"
-            android:inputType="text"
+            android:inputType="textCapWords"
             android:maxLength="100"
             android:padding="12dp"
+            android:spinnerMode="dialog"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/txtAmount"
@@ -66,18 +85,18 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/txtExpenseNotes"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_margin="12dp"
             android:background="@drawable/bg_drawable"
             android:drawSelectorOnTop="true"
             android:entries="@array/expense_types"
             android:hint="@string/notes"
-            android:inputType="textNoSuggestions"
+            android:inputType="textCapWords"
             android:lines="3"
             android:maxLength="200"
             android:maxLines="3"
             android:padding="12dp"
-            android:textSize="14sp"
+            android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/txtAmount"

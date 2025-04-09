@@ -22,4 +22,16 @@ class MainViewModel @Inject constructor(
             repository.insertExpense(expense)
         }
     }
+
+    fun updateExpense(expense: Expense) = viewModelScope.launch {
+        val data = withContext(Dispatchers.IO) {
+            repository.updateExpense(expense)
+        }
+    }
+
+    fun deleteExpense(expense: Expense) = viewModelScope.launch {
+        val data = withContext(Dispatchers.IO) {
+            repository.deleteExpense(expense)
+        }
+    }
 }

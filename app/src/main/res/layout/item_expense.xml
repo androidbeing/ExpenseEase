@@ -20,8 +20,8 @@
             android:layout_marginTop="4dp"
             android:maxLength="100"
             android:text="Bought a BMW Car"
-            android:textSize="14sp"
             android:textColor="@color/purple_200"
+            android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,12 +30,15 @@
             android:id="@+id/textType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:fontFamily="@font/open_sans"
             android:maxLength="100"
             android:text="Transport"
             android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintStart_toStartOf="@+id/txtExpense"
+            app:fontFamily="@font/open_sans_italic"
+            app:layout_constraintBottom_toBottomOf="@+id/textAmount"
+            app:layout_constraintEnd_toEndOf="@+id/txtExpense"
+            app:layout_constraintStart_toEndOf="@+id/textAmount"
             app:layout_constraintTop_toBottomOf="@+id/txtExpense" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -47,9 +50,8 @@
             android:text="INR 15000000"
             android:textAlignment="textEnd"
             android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtExpense" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textDateTime"
@@ -60,9 +62,8 @@
             android:text="A month ago"
             android:textAlignment="textStart"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintStart_toStartOf="@+id/textType"
-            app:layout_constraintTop_toBottomOf="@+id/textType" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txtSpentOn"
@@ -73,8 +74,10 @@
             android:text="08/04/2025"
             android:textAlignment="textStart"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textAmount"
+            app:layout_constraintTop_toBottomOf="@+id/textAmount" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -82,5 +85,23 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layout_constraintGuide_percent=".7" />
+
+        <ImageView
+            android:id="@+id/imgEdit"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+
+
+        <ImageView
+            android:id="@+id/imgDelete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/imgEdit"
+            app:layout_constraintTop_toTopOf="@+id/imgEdit"
+            app:srcCompat="@android:drawable/ic_menu_delete" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

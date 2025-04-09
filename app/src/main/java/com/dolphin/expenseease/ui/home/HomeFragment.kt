@@ -7,10 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dolphin.expenseease.R
 import com.dolphin.expenseease.data.db.expense.Expense
+import com.dolphin.expenseease.data.model.Alert
 import com.dolphin.expenseease.databinding.FragmentHomeBinding
 import com.dolphin.expenseease.listeners.AddExpenseListener
+import com.dolphin.expenseease.listeners.ExpenseEditListener
+import com.dolphin.expenseease.listeners.OnClickAlertListener
 import com.dolphin.expenseease.ui.main.MainViewModel
+import com.dolphin.expenseease.utils.DialogUtils.showAlertDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,6 +24,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private lateinit var expenseAdapter: ExpenseAdapter
     private lateinit var expenseList: MutableList<Expense>
+    private var updateIndex: Int = -1
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -53,17 +59,45 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun addExpenseDialog() {
-        val addExpenseBottomSheet = AddExpenseSheet(object : AddExpenseListener {
+    private fun addExpenseDialog(expenseToUpdate: Expense? = null) {
+        val addExpenseBottomSheet = AddExpenseSheet(expenseToUpdate, object : AddExpenseListener {
             override fun onExpenseAdd(expense: Expense) {
-                viewModel.addExpense(expense)
+                if(expenseToUpdate != null) {
+                    requireActivity().runOnUiThread {
+                        expenseList[updateIndex] = expense
+                        expenseAdapter.notifyItemChanged(updateIndex)
+                        viewModel.updateExpense(expense)
+                    }
+                } else {
+                    viewModel.addExpense(expense)
+                }
             }
         })
         addExpenseBottomSheet.show(childFragmentManager, AddExpenseSheet.TAG)
     }
 
     private fun initViews() {
-        expenseAdapter = ExpenseAdapter(requireContext(), expenseList)
+        expenseAdapter = ExpenseAdapter(requireContext(), expenseList, object: ExpenseEditListener {
+            override fun onExpenseEdit(expense: Expense, index: Int) {
+                updateIndex = index
+                addExpenseDialog(expense)
+            }
+
+            override fun onExpenseRemove(expense: Expense, index: Int) {
+                val alert = Alert(getString(R.string.delete), getString(R.string.del_msg))
+                showAlertDialog(requireContext(), alert, object: OnClickAlertListener {
+                    override fun onAcknowledge(isOkay: Boolean) {
+                        if(isOkay) {
+                            requireActivity().runOnUiThread {
+                                expenseList.remove(expense)
+                                expenseAdapter.notifyItemRemoved(index)
+                                viewModel.deleteExpense(expense)
+                            }
+                        }
+                    }
+                })
+            }
+        })
         binding.recyclerExpenses.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerExpenses.adapter = expenseAdapter
     }

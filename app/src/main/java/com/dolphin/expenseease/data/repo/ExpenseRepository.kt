@@ -20,9 +20,8 @@ class ExpenseRepository @Inject constructor(
     fun getAllExpenses(): LiveData<List<Expense>> = expenseDao.getAll()
 
     suspend fun insertExpense(expense: Expense) = expenseDao.insert(expense)
-
+    suspend fun updateExpense(expense: Expense) = expenseDao.update(expense)
     suspend fun deleteExpense(expense: Expense) = expenseDao.delete(expense)
-
 
     fun getAllBudgets(): LiveData<List<Budget>> = budgetDao.getAll()
 

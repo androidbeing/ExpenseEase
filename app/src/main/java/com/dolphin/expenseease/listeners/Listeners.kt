@@ -6,6 +6,11 @@ interface AddExpenseListener {
     fun onExpenseAdd(expense: Expense)
 }
 
+interface ExpenseEditListener {
+    fun onExpenseEdit(expense: Expense, index: Int)
+    fun onExpenseRemove(expense: Expense, index: Int)
+}
+
 
 interface AddBalanceListener {
     fun onBalanceAdd(addedAmount: Double, notes: String)
@@ -21,4 +26,8 @@ interface AddReminderListener {
 
 interface MonthListener {
     fun onMonthSelected(monthYear: String)
+}
+
+interface OnClickAlertListener {
+    fun onAcknowledge(isOkay: Boolean)
 }

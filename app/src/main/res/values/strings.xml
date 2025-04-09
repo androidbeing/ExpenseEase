@@ -18,10 +18,17 @@
     <string name="rupee_symbol">\u20B9 %s</string>
     <string name="add_balance">Add Balance</string>
     <string name="amount">Amount</string>
+    <string name="date">Date</string>
     <string name="cancel">Cancel</string>
     <string name="add">Add</string>
+    <string name="okay">Okay</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="delete">Delete</string>
+    <string name="del_msg">Are you sure want to delete the item?</string>
     <string name="add_expense">Add Expense</string>
     <string name="notes">Notes</string>
+    <string name="spent_on">Spent on %s</string>
     <string name="enter_amount">Please enter an amount</string>
     <string name="add_budget">Add Budget</string>
     <string name="month_year">Month/Year</string>
