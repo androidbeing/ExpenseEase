@@ -7,10 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dolphin.expenseease.R
 import com.dolphin.expenseease.data.db.budget.Budget
+import com.dolphin.expenseease.data.model.Alert
 import com.dolphin.expenseease.databinding.FragmentBudgetBinding
 import com.dolphin.expenseease.listeners.AddBudgetListener
+import com.dolphin.expenseease.listeners.BudgetEditListener
+import com.dolphin.expenseease.listeners.OnClickAlertListener
 import com.dolphin.expenseease.ui.wallet.AddBalanceSheet
+import com.dolphin.expenseease.utils.DialogUtils.showAlertDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +29,7 @@ class BudgetFragment : Fragment() {
     private lateinit var budgetAdapter: BudgetAdapter
     private lateinit var budgetList: MutableList<Budget>
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private var updateIndex: Int = -1
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -46,7 +52,33 @@ class BudgetFragment : Fragment() {
     }
 
     private fun initViews() {
-        budgetAdapter = BudgetAdapter(requireContext(), budgetList)
+        budgetAdapter = BudgetAdapter(requireContext(), budgetList, object: BudgetEditListener {
+            override fun onBudgetEdit(
+                budget: Budget,
+                index: Int
+            ) {
+                updateIndex = index
+                addBudgetDialog(budget)
+            }
+
+            override fun onBudgetRemove(
+                budget: Budget,
+                index: Int
+            ) {
+                val alert = Alert(getString(R.string.delete), getString(R.string.del_msg))
+                showAlertDialog(requireContext(), alert, object: OnClickAlertListener {
+                    override fun onAcknowledge(isOkay: Boolean) {
+                        if(isOkay) {
+                            requireActivity().runOnUiThread {
+                                budgetList.remove(budget)
+                                budgetAdapter.notifyItemRemoved(index)
+                                viewModel.deleteExpense(budget)
+                            }
+                        }
+                    }
+                })
+            }
+        })
         binding.recyclerBudgets.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerBudgets.adapter = budgetAdapter
 
@@ -55,8 +87,8 @@ class BudgetFragment : Fragment() {
         }
     }
 
-    private fun addBudgetDialog() {
-        val addBudgetBottomSheet = AddBudgetSheet(object : AddBudgetListener {
+    private fun addBudgetDialog(budgetToUpdate: Budget? = null) {
+        val addBudgetBottomSheet = AddBudgetSheet(budgetToUpdate, object : AddBudgetListener {
             override fun onBudgetAdd(
                 budgetType: String,
                 allocatedAmount: Double,
@@ -69,7 +101,15 @@ class BudgetFragment : Fragment() {
                         monthYear = monthYear,
                         createdAt = Date().time
                     )
-                    viewModel.addBudget(budget)
+                    if(budgetToUpdate == null) {
+                        viewModel.addBudget(budget)
+                    } else {
+                        requireActivity().runOnUiThread {
+                            budgetList[updateIndex] = budget
+                            budgetAdapter.notifyItemChanged(updateIndex)
+                            viewModel.updateBudget(budget)
+                        }
+                    }
                 }
             }
         })

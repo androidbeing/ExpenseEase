@@ -29,4 +29,16 @@ class BudgetViewModel @Inject constructor(
             repository.insertBudget(budget)
         }
     }
+
+    fun updateBudget(budget: Budget) = viewModelScope.launch {
+        val data = withContext(Dispatchers.IO) {
+            repository.updateBudget(budget)
+        }
+    }
+
+    fun deleteExpense(budget: Budget) = viewModelScope.launch {
+        val data = withContext(Dispatchers.IO) {
+            repository.deleteBudget(budget)
+        }
+    }
 }

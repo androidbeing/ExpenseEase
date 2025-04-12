@@ -8,9 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dolphin.expenseease.R
 import com.dolphin.expenseease.data.db.wallet.MyWallet
+import com.dolphin.expenseease.data.model.Alert
 import com.dolphin.expenseease.databinding.FragmentWalletBinding
 import com.dolphin.expenseease.listeners.AddBalanceListener
+import com.dolphin.expenseease.listeners.OnClickAlertListener
+import com.dolphin.expenseease.listeners.WalletEditListener
+import com.dolphin.expenseease.utils.DialogUtils.showAlertDialog
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +30,7 @@ class WalletFragment : Fragment() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private lateinit var balanceAdapter: BalanceAdapter
     private lateinit var balanceList: MutableList<MyWallet>
+    private var updateIndex: Int = -1
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -44,7 +50,33 @@ class WalletFragment : Fragment() {
 
     private fun initViews() {
         balanceList = mutableListOf()
-        balanceAdapter = BalanceAdapter(requireContext(), balanceList)
+        balanceAdapter = BalanceAdapter(requireContext(), balanceList, object: WalletEditListener {
+            override fun onWalletEdit(
+                wallet: MyWallet,
+                index: Int
+            ) {
+                updateIndex = index
+                addBalanceDialog(wallet)
+            }
+
+            override fun onWalletRemove(
+                wallet: MyWallet,
+                index: Int
+            ) {
+                val alert = Alert(getString(R.string.delete), getString(R.string.del_msg))
+                showAlertDialog(requireContext(), alert, object: OnClickAlertListener {
+                    override fun onAcknowledge(isOkay: Boolean) {
+                        if(isOkay) {
+                            requireActivity().runOnUiThread {
+                                balanceList.remove(wallet)
+                                balanceAdapter.notifyItemRemoved(index)
+                                viewModel.deleteWallet(wallet)
+                            }
+                        }
+                    }
+                })
+            }
+        })
         binding.recyclerBalance.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerBalance.adapter = balanceAdapter
 
@@ -53,8 +85,8 @@ class WalletFragment : Fragment() {
         }
     }
 
-    private fun addBalanceDialog() {
-        val addBalanceBottomSheet = AddBalanceSheet(object : AddBalanceListener {
+    private fun addBalanceDialog(walletToUpdate: MyWallet? = null) {
+        val addBalanceBottomSheet = AddBalanceSheet(walletToUpdate, object : AddBalanceListener {
             override fun onBalanceAdd(addedAmount: Double, notes: String) {
                 coroutineScope.launch {
                     val wallet = viewModel.getLatestBalance().value
@@ -67,7 +99,15 @@ class WalletFragment : Fragment() {
                         createdAt = System.currentTimeMillis(),
                         updatedAt = System.currentTimeMillis()
                     )
-                    viewModel.addBalance(newBalance)
+                    if(walletToUpdate == null) {
+                        viewModel.addBalance(newBalance)
+                    } else {
+                        requireActivity().runOnUiThread {
+                            balanceList[updateIndex] = newBalance
+                            balanceAdapter.notifyItemChanged(updateIndex)
+                            viewModel.updateWallet(newBalance)
+                        }
+                    }
                 }
             }
         })

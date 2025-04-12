@@ -26,14 +26,14 @@ class ExpenseRepository @Inject constructor(
     fun getAllBudgets(): LiveData<List<Budget>> = budgetDao.getAll()
 
     suspend fun insertBudget(budget: Budget) = budgetDao.insert(budget)
-
+    suspend fun updateBudget(budget: Budget) = budgetDao.update(budget)
     suspend fun deleteBudget(budget: Budget) = budgetDao.delete(budget)
 
 
     fun getAllReminders(): LiveData<List<Reminder>> = reminderDao.getAll()
 
     suspend fun insertReminder(reminder: Reminder) = reminderDao.insert(reminder)
-
+    suspend fun updateReminder(reminder: Reminder) = reminderDao.update(reminder)
     suspend fun deleteReminder(reminder: Reminder) = reminderDao.delete(reminder)
 
 
@@ -42,6 +42,8 @@ class ExpenseRepository @Inject constructor(
     fun getLatestWallet(): LiveData<MyWallet> = walletDao.getLatestBalance()
 
     suspend fun insertWallet(wallet: MyWallet) = walletDao.insert(wallet)
+
+    suspend fun updateWallet(wallet: MyWallet) = walletDao.update(wallet)
 
     suspend fun deleteWallet(wallet: MyWallet) = walletDao.delete(wallet)
 }

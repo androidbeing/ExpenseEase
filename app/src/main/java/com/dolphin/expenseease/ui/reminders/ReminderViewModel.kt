@@ -22,4 +22,16 @@ class ReminderViewModel@Inject constructor(
             repository.insertReminder(reminder)
         }
     }
+
+    fun updateReminder(reminder: Reminder) = viewModelScope.launch {
+        val data = withContext(Dispatchers.IO) {
+            repository.updateReminder(reminder)
+        }
+    }
+
+    fun deleteReminder(reminder: Reminder) = viewModelScope.launch {
+        val data = withContext(Dispatchers.IO) {
+            repository.deleteReminder(reminder)
+        }
+    }
 }

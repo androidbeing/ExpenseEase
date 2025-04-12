@@ -26,4 +26,16 @@ class WalletViewModel @Inject constructor(
     fun getLatestBalance(): LiveData<MyWallet> {
         return repository.getLatestWallet()
     }
+
+    fun updateWallet(wallet: MyWallet) = viewModelScope.launch {
+        val data = withContext(Dispatchers.IO) {
+            repository.updateWallet(wallet)
+        }
+    }
+
+    fun deleteWallet(wallet: MyWallet) = viewModelScope.launch {
+        val data = withContext(Dispatchers.IO) {
+            repository.deleteWallet(wallet)
+        }
+    }
 }

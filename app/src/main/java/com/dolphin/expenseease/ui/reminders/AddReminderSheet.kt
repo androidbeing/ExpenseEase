@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import com.dolphin.expenseease.R
+import com.dolphin.expenseease.data.db.reminder.Reminder
+import com.dolphin.expenseease.data.db.wallet.MyWallet
 import com.dolphin.expenseease.databinding.SheetAddReminderBinding
 import com.dolphin.expenseease.listeners.AddReminderListener
 import com.dolphin.expenseease.listeners.MonthListener
@@ -18,7 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class AddReminderSheet(private val listener: AddReminderListener) : BottomSheetDialogFragment() {
+class AddReminderSheet(private val reminder: Reminder? = null, private val listener: AddReminderListener) : BottomSheetDialogFragment() {
 
     private var _binding: SheetAddReminderBinding? = null
     private val binding get() = _binding!!
@@ -46,6 +48,11 @@ class AddReminderSheet(private val listener: AddReminderListener) : BottomSheetD
     }
 
     private fun initViews() {
+        if(reminder != null) {
+            binding.txtNotes.setText(reminder.notes)
+            binding.txtMonthYear.setText(reminder.dateTime)
+        }
+        
         binding.txtMonthYear.setOnClickListener {
             showDateTimePicker(requireContext(), object : MonthListener {
                 override fun onMonthSelected(monthYear: String) {

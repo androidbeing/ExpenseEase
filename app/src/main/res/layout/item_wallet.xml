@@ -20,8 +20,9 @@
             android:fontFamily="@font/open_sans_semibold"
             android:maxLength="100"
             android:text="Adding for Construction"
+            android:textColor="@color/purple_200"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,17 +32,17 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:fontFamily="@font/open_sans"
-            android:maxLength="5"
-            android:visibility="visible"
+            android:maxLength="10"
             android:text="10000"
             android:textAlignment="textEnd"
-            android:textSize="15sp"
+            android:textSize="14sp"
+            android:visibility="visible"
             app:fontFamily="@font/open_sans_semibold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="@+id/textNotes" />
+            app:layout_constraintTop_toTopOf="@+id/textCreatedAt" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textCreatedAt"
@@ -52,6 +53,7 @@
             android:text="A week ago"
             android:textAlignment="textStart"
             android:textSize="12sp"
+            android:layout_marginVertical="8dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/textNotes"
             app:layout_constraintTop_toBottomOf="@+id/textNotes" />
@@ -61,8 +63,25 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent=".5" />
+            app:layout_constraintGuide_percent=".7" />
 
+        <ImageView
+            android:id="@+id/imgEdit"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+
+
+        <ImageView
+            android:id="@+id/imgDelete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/imgEdit"
+            app:layout_constraintTop_toTopOf="@+id/imgEdit"
+            app:srcCompat="@android:drawable/ic_menu_delete" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
