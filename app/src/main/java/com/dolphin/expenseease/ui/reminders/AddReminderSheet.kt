@@ -71,7 +71,8 @@ class AddReminderSheet(private val reminder: Reminder? = null, private val liste
             }
 
             coroutineScope.launch {
-                listener.onReminderAdd(txtNotes, txtMonthYear)
+                val reminder = Reminder(id=reminder?.id ?: 0, notes = txtNotes, dateTime = txtMonthYear)
+                listener.onReminderAdd(reminder)
                 dismiss()
             }
         }

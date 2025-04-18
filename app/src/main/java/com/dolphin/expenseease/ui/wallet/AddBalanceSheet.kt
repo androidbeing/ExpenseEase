@@ -63,7 +63,8 @@ class AddBalanceSheet(private val wallet: MyWallet? = null, private val listener
 
             val addedAmount = amount.toDouble()
             coroutineScope.launch {
-                listener.onBalanceAdd(addedAmount, notes)
+                val wallet = MyWallet(id=wallet?.id ?: 0, addedAmount = addedAmount, notes = notes, balance = 0.0)
+                listener.onBalanceAdd(wallet)
                 dismiss()
             }
         }

@@ -20,6 +20,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.Date
 
 class AddExpenseSheet(private val expense: Expense? = null, private val listener: AddExpenseListener) : BottomSheetDialogFragment() {
     private var _binding: SheetAddExpenseBinding? = null
@@ -59,11 +61,17 @@ class AddExpenseSheet(private val expense: Expense? = null, private val listener
         binding.txtDate.setText(getTodayDate())
 
         binding.txtDate.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.DAY_OF_MONTH, 1)
+            val minDate = calendar.timeInMillis
+            calendar.time = Date()
+            val maxDate = calendar.timeInMillis
             showMonthYearPicker(requireContext(), object : MonthListener {
                 override fun onMonthSelected(monthYear: String) {
+
                     binding.txtDate.setText(monthYear)
                 }
-            }, DATE_FORMAT)
+            }, DATE_FORMAT, minDate, maxDate)
         }
 
         binding.btnAdd.setOnClickListener {
@@ -78,6 +86,7 @@ class AddExpenseSheet(private val expense: Expense? = null, private val listener
             }
 
             val expense = Expense(
+                id = expense?.id ?: 0,
                 amount = amount.toDouble(),
                 type = type,
                 notes = expenseNotes.capitalizeFirstLetter(),

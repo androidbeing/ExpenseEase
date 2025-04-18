@@ -4,10 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.dolphin.expenseease.R
 import com.dolphin.expenseease.data.db.budget.Budget
 import com.dolphin.expenseease.databinding.ItemBudgetBinding
 import com.dolphin.expenseease.listeners.BudgetEditListener
+import com.dolphin.expenseease.utils.CurrencyManager
 import com.dolphin.expenseease.utils.ExtensiveFunctions.getRelativeTimeString
 
 class BudgetAdapter(private val context: Context, private val list: MutableList<Budget>,
@@ -33,9 +33,10 @@ class BudgetAdapter(private val context: Context, private val list: MutableList<
     class BudgetViewHolder(private val context: Context, private val view: ItemBudgetBinding, private val listener: BudgetEditListener) :
         RecyclerView.ViewHolder(view.root) {
         fun bindItems(budget: Budget, position: Int) {
+            val currencySymbol = CurrencyManager.getCurrencySymbol(context)
+            view.textAmount.text = "$currencySymbol ${budget.amount}"
             view.textType.text = budget.type
             view.textDateTime.text = context.getRelativeTimeString(budget.updatedAt)
-            view.textAmount.text = context.getString(R.string.rupee_symbol, "${budget.amount}")
             view.txtDate.text = "${budget.monthYear}"
             view.imgEdit.setOnClickListener { listener.onBudgetEdit(budget, position) }
             view.imgDelete.setOnClickListener { listener.onBudgetRemove(budget, position) }

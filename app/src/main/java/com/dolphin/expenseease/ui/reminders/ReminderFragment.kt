@@ -91,21 +91,15 @@ class ReminderFragment : Fragment() {
     private fun addReminderDialog(reminderToUpdate: Reminder? = null) {
         val addReminderBottomSheet =
             AddReminderSheet(reminderToUpdate, object : AddReminderListener {
-                override fun onReminderAdd(notes: String, monthYear: String) {
+                override fun onReminderAdd(remidner: Reminder) {
                     coroutineScope.launch {
-                        val reminder = Reminder(
-                            notes = notes,
-                            dateTime = monthYear,
-                            createdAt = Date().time,
-                            updatedAt = Date().time
-                        )
                         if (reminderToUpdate == null) {
-                            viewModel.addReminder(reminder)
+                            viewModel.addReminder(remidner)
                         } else {
                             requireActivity().runOnUiThread {
-                                reminderList[updateIndex] = reminder
+                                reminderList[updateIndex] = remidner
                                 reminderAdapter.notifyItemChanged(updateIndex)
-                                viewModel.updateReminder(reminder)
+                                viewModel.updateReminder(remidner)
                             }
                         }
                     }

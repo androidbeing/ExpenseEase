@@ -87,15 +87,15 @@ class WalletFragment : Fragment() {
 
     private fun addBalanceDialog(walletToUpdate: MyWallet? = null) {
         val addBalanceBottomSheet = AddBalanceSheet(walletToUpdate, object : AddBalanceListener {
-            override fun onBalanceAdd(addedAmount: Double, notes: String) {
+            override fun onBalanceAdd(wallet: MyWallet) {
                 coroutineScope.launch {
-                    val wallet = viewModel.getLatestBalance().value
-                    val newBalanceValue = wallet?.balance?.plus(addedAmount)
+                    val walletLatest = viewModel.getLatestBalance().value
+                    val newBalanceValue = walletLatest?.balance?.plus(wallet.addedAmount)
                     val newBalance = MyWallet(
                         id = wallet?.id ?: 0,
                         balance = newBalanceValue ?: 0.0,
-                        addedAmount = addedAmount,
-                        notes = notes,
+                        addedAmount = wallet.addedAmount,
+                        notes = wallet.notes,
                         createdAt = System.currentTimeMillis(),
                         updatedAt = System.currentTimeMillis()
                     )

@@ -20,7 +20,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Date
 
 @AndroidEntryPoint
 class BudgetFragment : Fragment() {
@@ -90,19 +89,22 @@ class BudgetFragment : Fragment() {
     private fun addBudgetDialog(budgetToUpdate: Budget? = null) {
         val addBudgetBottomSheet = AddBudgetSheet(budgetToUpdate, object : AddBudgetListener {
             override fun onBudgetAdd(
-                budgetType: String,
-                allocatedAmount: Double,
-                monthYear: String
+                budget: Budget
             ) {
                 coroutineScope.launch {
-                    val budget = Budget(
-                        amount = allocatedAmount,
-                        type = budgetType,
-                        monthYear = monthYear,
-                        createdAt = Date().time
-                    )
+                    val isDuplicate = budgetList.any { it.monthYear == budget.monthYear && it.type == budget.type }
+                    val index = budgetList.indexOfFirst { it.monthYear == budget.monthYear && it.type == budget.type }
                     if(budgetToUpdate == null) {
-                        viewModel.addBudget(budget)
+                        if (isDuplicate) {
+                            requireActivity().runOnUiThread {
+                                budget.id = budgetList[index].id
+                                budgetList[index] = budget
+                                budgetAdapter.notifyItemChanged(index)
+                                viewModel.updateBudget(budget)
+                            }
+                        } else {
+                            viewModel.addBudget(budget)
+                        }
                     } else {
                         requireActivity().runOnUiThread {
                             budgetList[updateIndex] = budget

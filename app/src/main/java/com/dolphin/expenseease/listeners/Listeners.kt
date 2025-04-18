@@ -16,7 +16,7 @@ interface ExpenseEditListener {
 
 
 interface AddBalanceListener {
-    fun onBalanceAdd(addedAmount: Double, notes: String)
+    fun onBalanceAdd(wallet: MyWallet)
 }
 
 interface WalletEditListener {
@@ -25,7 +25,7 @@ interface WalletEditListener {
 }
 
 interface AddBudgetListener {
-    fun onBudgetAdd(budgetType: String, allocatedAmount: Double, monthYear: String)
+    fun onBudgetAdd(budgetType: Budget)
 }
 
 interface BudgetEditListener {
@@ -34,7 +34,7 @@ interface BudgetEditListener {
 }
 
 interface AddReminderListener {
-    fun onReminderAdd(notes: String, monthYear: String)
+    fun onReminderAdd(reminder: Reminder)
 }
 
 interface ReminderEditListener {
