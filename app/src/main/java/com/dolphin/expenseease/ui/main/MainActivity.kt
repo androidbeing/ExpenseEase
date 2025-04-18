@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -17,12 +18,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.dolphin.expenseease.R
 import com.dolphin.expenseease.data.db.AppDatabase
 import com.dolphin.expenseease.databinding.ActivityMainBinding
-import com.dolphin.expenseease.utils.ApiEndpoint.GOOGLE_AUTH_URL
+import com.dolphin.expenseease.utils.Constants.EMAIL_ID
+import com.dolphin.expenseease.utils.Constants.USER_NAME
 import com.dolphin.expenseease.utils.GoogleSpreadSheetHelper
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.Scope
+import com.dolphin.expenseease.utils.PreferenceHelper
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +32,7 @@ import kotlinx.coroutines.withContext
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
 
     private val RC_SIGN_IN = 500
 
@@ -62,39 +62,18 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 //syncToSpreadSheet(applicationContext, data!!)
-            } else if (result.resultCode == Activity.RESULT_CANCELED) {
+            } else if (result.resultCode == RESULT_CANCELED) {
                 Log.i("AAA", "Result Cancelled...")
             }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        //supportActionBar?.hide()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        /*binding.appBarMain.fab.setOnClickListener { view ->
-            //val signInClient = getGoogleClient()
-            //startForResult.launch(signInClient.signInIntent)
-            /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .setAnchorView(R.id.fab).show()*/
-            viewModel.onFabClick()
-
-            /*val addExpenseBottomSheet = AddExpenseSheet(object : AddExpenseListener {
-                override fun onExpenseAdd(expense: Expense) {
-                    viewModel.addExpense(expense)
-                }
-            })
-            addExpenseBottomSheet.show(supportFragmentManager, AddExpenseSheet.TAG)*/
-        }
-
-        viewModel.fabClick.observe(this) { isFabClick ->
-            Log.i("AAA0", "Clicked Main")
-        }*/
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -114,15 +93,13 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        // Trigger the WorkManager to sync data
-        //val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>().build()
-        //WorkManager.getInstance(this).enqueue(syncWorkRequest)
+        initNavHeader()
     }
 
-    private fun syncInSheets() {
+    /*private fun syncInSheets() {
         val signInClient = getGoogleClient()
         startForResult.launch(signInClient.signInIntent)
-    }
+    }*/
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -131,12 +108,22 @@ class MainActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+    private fun initNavHeader() {
+        val navView: NavigationView = binding.navView
+        val headerView = navView.getHeaderView(0) // Get the first header view
+
+        val userNameTextView = headerView.findViewById<TextView>(R.id.txtName)
+        val emailTextView = headerView.findViewById<TextView>(R.id.txtEmail)
+
+        userNameTextView.text = PreferenceHelper.getString(USER_NAME) ?: getString(R.string.app_name) // Set the user name
+        emailTextView.text = PreferenceHelper.getString(EMAIL_ID) ?: "" // Set the email
+    }
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    private fun getGoogleClient(): GoogleSignInClient {
+    /*private fun getGoogleClient(): GoogleSignInClient {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestScopes(Scope(GOOGLE_AUTH_URL)) // Add required scopes
@@ -144,5 +131,5 @@ class MainActivity : AppCompatActivity() {
 
         val googleSignInClient = GoogleSignIn.getClient(this, gso)
         return googleSignInClient
-    }
+    }*/
 }

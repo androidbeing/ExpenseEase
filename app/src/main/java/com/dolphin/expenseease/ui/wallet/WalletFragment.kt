@@ -118,7 +118,7 @@ class WalletFragment : Fragment() {
         viewModel.allBalances.observe(viewLifecycleOwner) { balances ->
             Log.i("AAA", "Balance Avl: ${Gson().toJson(balances)}")
             balanceList.clear()
-            balanceList.addAll(balances)
+            balanceList.addAll(balances.sortedByDescending { balance -> balance.createdAt })
             balanceAdapter.notifyDataSetChanged()
             setView(balanceList.isNotEmpty())
         }
