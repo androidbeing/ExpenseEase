@@ -28,16 +28,6 @@ object PreferenceHelper {
         sharedPreferences.edit().putInt(key, value).apply()
     }
 
-    // Save an Long value
-    fun putLong(key: String, value: Long) {
-        sharedPreferences.edit().putLong(key, value).apply()
-    }
-
-    // Fetch an integer value
-    fun getLong(key: String, defaultValue: Long = 0): Long {
-        return sharedPreferences.getLong(key, defaultValue)
-    }
-
     // Fetch an integer value
     fun getInt(key: String, defaultValue: Int = 0): Int {
         return sharedPreferences.getInt(key, defaultValue)

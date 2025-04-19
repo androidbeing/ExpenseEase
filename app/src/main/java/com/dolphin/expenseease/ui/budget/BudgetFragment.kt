@@ -122,7 +122,7 @@ class BudgetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.allBudgets.observe(viewLifecycleOwner) {
             budgetList.clear()
-            budgetList.addAll(it.sortedByDescending { budget -> budget.createdAt })
+            budgetList.addAll(it)
             budgetAdapter.notifyDataSetChanged()
             setView(budgetList.isNotEmpty())
         }

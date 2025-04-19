@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import com.dolphin.expenseease.R
 import com.dolphin.expenseease.data.db.reminder.Reminder
+import com.dolphin.expenseease.data.db.wallet.MyWallet
 import com.dolphin.expenseease.databinding.SheetAddReminderBinding
 import com.dolphin.expenseease.listeners.AddReminderListener
 import com.dolphin.expenseease.listeners.MonthListener
 import com.dolphin.expenseease.utils.Constants.DATE_TIME_FORMAT
 import com.dolphin.expenseease.utils.DateUtils.showDateTimePicker
 import com.dolphin.expenseease.utils.ExtensiveFunctions.showToast
-import com.dolphin.expenseease.utils.capitalizeFirstLetter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -62,7 +62,7 @@ class AddReminderSheet(private val reminder: Reminder? = null, private val liste
         }
 
         binding.btnAdd.setOnClickListener {
-            val txtNotes = binding.txtNotes.text.toString().trim().capitalizeFirstLetter()
+            val txtNotes = binding.txtNotes.text.toString().trim()
             val txtMonthYear = binding.txtMonthYear.text.toString().trim()
 
             if (txtNotes.isEmpty() || txtMonthYear.isEmpty()) {

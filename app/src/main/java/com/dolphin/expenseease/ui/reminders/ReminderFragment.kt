@@ -15,13 +15,11 @@ import com.dolphin.expenseease.listeners.AddReminderListener
 import com.dolphin.expenseease.listeners.OnClickAlertListener
 import com.dolphin.expenseease.listeners.ReminderEditListener
 import com.dolphin.expenseease.utils.DialogUtils.showAlertDialog
-import com.dolphin.expenseease.utils.PermissionHandler.hasExactAlarmPermission
-import com.dolphin.expenseease.utils.PermissionHandler.openAppSettings
-import com.dolphin.expenseease.utils.ReminderScheduler
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Date
 
 @AndroidEntryPoint
 class ReminderFragment : Fragment() {
@@ -76,11 +74,6 @@ class ReminderFragment : Fragment() {
                                     reminderList.remove(reminder)
                                     reminderAdapter.notifyItemRemoved(index)
                                     viewModel.deleteReminder(reminder)
-                                    if (hasExactAlarmPermission(requireContext())) {
-                                        ReminderScheduler.cancelReminder(requireContext(), reminder)
-                                    } else {
-                                        openAppSettings(requireContext())
-                                    }
                                 }
                             }
                         }
@@ -91,18 +84,7 @@ class ReminderFragment : Fragment() {
         binding.recyclerReminders.adapter = reminderAdapter
 
         binding.fab.setOnClickListener {
-            if (hasExactAlarmPermission(requireContext())) {
-                addReminderDialog()
-            } else {
-                val alert = Alert(getString(R.string.permission_req), getString(R.string.reminder_permission_msg))
-                showAlertDialog(requireActivity(), alert, object: OnClickAlertListener {
-                    override fun onAcknowledge(isOkay: Boolean) {
-                        if (isOkay) {
-                            openAppSettings(requireContext())
-                        }
-                    }
-                })
-            }
+            addReminderDialog()
         }
     }
 
@@ -112,18 +94,12 @@ class ReminderFragment : Fragment() {
                 override fun onReminderAdd(remidner: Reminder) {
                     coroutineScope.launch {
                         if (reminderToUpdate == null) {
-                            if (hasExactAlarmPermission(requireContext())) {
-                                viewModel.addReminder(remidner)
-                                ReminderScheduler.scheduleReminder(requireContext(), remidner)
-                            } else {
-                                openAppSettings(requireContext())
-                            }
+                            viewModel.addReminder(remidner)
                         } else {
-                            if (hasExactAlarmPermission(requireContext())) {
+                            requireActivity().runOnUiThread {
+                                reminderList[updateIndex] = remidner
+                                reminderAdapter.notifyItemChanged(updateIndex)
                                 viewModel.updateReminder(remidner)
-                                ReminderScheduler.updateReminder(requireContext(), remidner)
-                            } else {
-                                openAppSettings(requireContext())
                             }
                         }
                     }
@@ -136,7 +112,7 @@ class ReminderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.allReminders.observe(viewLifecycleOwner) {
             reminderList.clear()
-            reminderList.addAll(it.sortedByDescending { reminder -> reminder.getMillis() })
+            reminderList.addAll(it)
             reminderAdapter.notifyDataSetChanged()
             setView(reminderList.isNotEmpty())
         }

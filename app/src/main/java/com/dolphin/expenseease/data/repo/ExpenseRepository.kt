@@ -7,8 +7,6 @@ import com.dolphin.expenseease.data.db.expense.Expense
 import com.dolphin.expenseease.data.db.expense.ExpenseDao
 import com.dolphin.expenseease.data.db.reminder.Reminder
 import com.dolphin.expenseease.data.db.reminder.ReminderDao
-import com.dolphin.expenseease.data.db.sheet.MySheet
-import com.dolphin.expenseease.data.db.sheet.MySheetDao
 import com.dolphin.expenseease.data.db.wallet.MyWallet
 import com.dolphin.expenseease.data.db.wallet.MyWalletDao
 import javax.inject.Inject
@@ -18,7 +16,6 @@ class ExpenseRepository @Inject constructor(
     private val budgetDao: BudgetDao,
     private val reminderDao: ReminderDao,
     private val walletDao: MyWalletDao,
-    private val sheetDao: MySheetDao
 ) {
     fun getAllExpenses(): LiveData<List<Expense>> = expenseDao.getAll()
 
@@ -38,8 +35,6 @@ class ExpenseRepository @Inject constructor(
     suspend fun insertReminder(reminder: Reminder) = reminderDao.insert(reminder)
     suspend fun updateReminder(reminder: Reminder) = reminderDao.update(reminder)
     suspend fun deleteReminder(reminder: Reminder) = reminderDao.delete(reminder)
-
-    suspend fun insertSheet(sheet: MySheet) = sheetDao.insert(sheet)
 
 
     fun getAllWallets(): LiveData<List<MyWallet>> = walletDao.getAll()

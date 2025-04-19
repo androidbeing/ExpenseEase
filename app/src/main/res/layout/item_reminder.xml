@@ -30,10 +30,9 @@
             android:id="@+id/textDateTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="4dp"
-            android:layout_marginTop="8dp"
             android:fontFamily="@font/open_sans"
             android:maxLength="50"
+            android:layout_marginVertical="4dp"
             android:text="25/05/2025 12:00 PM"
             android:textAlignment="textStart"
             android:textSize="12sp"
@@ -51,10 +50,9 @@
             android:text="A week ago"
             android:textAlignment="textEnd"
             android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="@+id/txtStatus"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="@+id/txtStatus" />
+            app:layout_constraintTop_toTopOf="@+id/textDateTime" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -80,17 +78,6 @@
             app:layout_constraintEnd_toStartOf="@+id/imgEdit"
             app:layout_constraintTop_toTopOf="@+id/imgEdit"
             app:srcCompat="@android:drawable/ic_menu_delete" />
-
-        <TextView
-            android:id="@+id/txtStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Upcoming"
-            android:textSize="12sp"
-            android:fontFamily="@font/open_sans_semibold"
-            app:layout_constraintStart_toStartOf="@+id/textDateTime"
-            app:layout_constraintTop_toBottomOf="@+id/textDateTime" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

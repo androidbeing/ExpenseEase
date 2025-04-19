@@ -3,7 +3,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">BudgetBuddy</string>
-    <string name="nav_header_subtitle">Track. Save. Prosper.</string>
+    <string name="nav_header_subtitle">support@budgetbuddy.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -28,9 +28,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="currency_detail">Currency Detail</string>
-    <string name="backup_detail">Backup Detail</string>
-    <string name="permission_req">Enable Alarms</string>
-    <string name="reminder_permission_msg">Please enable Alarms and reminders in settings</string>
     <string name="delete">Delete</string>
     <string name="del_msg">Are you sure want to delete the item?</string>
     <string name="add_expense">Add Expense</string>
@@ -42,20 +39,9 @@
     <string name="lbl_when">When</string>
     <string name="add_reminder">Add Reminder</string>
     <string name="fill_all_fields">Fill all fields</string>
-    <string name="last_synced_on">Last Sync On</string>
-    <string name="username">User Name</string>
-    <string name="user_email">Email ID</string>
-    <string name="currency_name">Currency Name</string>
+    <string name="currentcy_name">Currentcy Name</string>
     <string name="currency_code">Currency Code</string>
     <string name="currency_symbol">Currency Symbol</string>
-    <string name="lbl_elapsed">Elapsed</string>
-    <string name="lbl_upcoming">Upcoming</string>
-    <string name="sync_to_google_sheets">Sync to Google Sheets</string>
-    <string name="not_synced">Not synced yet</string>
-    <string name="sync_success">Data synced successfully!</string>
-    <string name="sync_fail">Data Sync failed!</string>
-
-    <string name="default_web_client_id">161874295130-cj70qk48ndrd5ugkp60sr6e42dai4ajo.apps.googleusercontent.com</string>
 
     <string-array name="expense_types" >
         <item>Food</item>
