@@ -21,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class WalletFragment : Fragment() {
@@ -31,6 +32,7 @@ class WalletFragment : Fragment() {
     private lateinit var balanceAdapter: BalanceAdapter
     private lateinit var balanceList: MutableList<MyWallet>
     private var updateIndex: Int = -1
+    private var latestBalance = 0.0
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -48,9 +50,10 @@ class WalletFragment : Fragment() {
         return root
     }
 
+
     private fun initViews() {
         balanceList = mutableListOf()
-        balanceAdapter = BalanceAdapter(requireContext(), balanceList, object: WalletEditListener {
+        balanceAdapter = BalanceAdapter(requireContext(), balanceList, object : WalletEditListener {
             override fun onWalletEdit(
                 wallet: MyWallet,
                 index: Int
@@ -64,9 +67,9 @@ class WalletFragment : Fragment() {
                 index: Int
             ) {
                 val alert = Alert(getString(R.string.delete), getString(R.string.del_msg))
-                showAlertDialog(requireContext(), alert, object: OnClickAlertListener {
+                showAlertDialog(requireContext(), alert, object : OnClickAlertListener {
                     override fun onAcknowledge(isOkay: Boolean) {
-                        if(isOkay) {
+                        if (isOkay) {
                             requireActivity().runOnUiThread {
                                 balanceList.remove(wallet)
                                 balanceAdapter.notifyItemRemoved(index)
@@ -89,17 +92,17 @@ class WalletFragment : Fragment() {
         val addBalanceBottomSheet = AddBalanceSheet(walletToUpdate, object : AddBalanceListener {
             override fun onBalanceAdd(wallet: MyWallet) {
                 coroutineScope.launch {
-                    val walletLatest = viewModel.getLatestBalance().value
-                    val newBalanceValue = walletLatest?.balance?.plus(wallet.addedAmount)
+                    Log.i("AAA", "Latest: ${latestBalance}")
+                    val newBalanceValue = latestBalance + (wallet.addedAmount)
                     val newBalance = MyWallet(
-                        id = wallet?.id ?: 0,
-                        balance = newBalanceValue ?: 0.0,
+                        id = wallet.id ?: 0,
+                        balance = newBalanceValue!!,
                         addedAmount = wallet.addedAmount,
                         notes = wallet.notes,
                         createdAt = System.currentTimeMillis(),
                         updatedAt = System.currentTimeMillis()
                     )
-                    if(walletToUpdate == null) {
+                    if (walletToUpdate == null) {
                         viewModel.addBalance(newBalance)
                     } else {
                         requireActivity().runOnUiThread {
@@ -108,6 +111,8 @@ class WalletFragment : Fragment() {
                             viewModel.updateWallet(newBalance)
                         }
                     }
+
+
                 }
             }
         })
@@ -121,6 +126,12 @@ class WalletFragment : Fragment() {
             balanceList.addAll(balances.sortedByDescending { balance -> balance.createdAt })
             balanceAdapter.notifyDataSetChanged()
             setView(balanceList.isNotEmpty())
+        }
+
+        viewModel.getLatestBalance().observe(viewLifecycleOwner) { walletLatest ->
+            if(walletLatest != null) {
+                this.latestBalance = walletLatest?.balance ?: 0.0
+            }
         }
     }
 
