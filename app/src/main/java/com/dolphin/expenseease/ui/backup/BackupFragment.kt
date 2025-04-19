@@ -22,12 +22,10 @@ import com.dolphin.expenseease.utils.Constants.USER_NAME
 import com.dolphin.expenseease.utils.ExtensiveFunctions.getRelativeTimeString
 import com.dolphin.expenseease.utils.PreferenceHelper
 import com.dolphin.expenseease.utils.google.GoogleSignInHelper
-import com.dolphin.expenseease.utils.google.SheetUtils.convertToList
 import com.dolphin.expenseease.utils.google.SheetUtils.getCurrentYearSheetName
 import com.dolphin.expenseease.utils.google.SheetsServiceHelper
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,7 +36,7 @@ import com.dolphin.expenseease.data.db.sheet.MySheet
 import com.dolphin.expenseease.utils.ToastUtils
 
 @AndroidEntryPoint
-class BackupFragment: Fragment() {
+class BackupFragment : Fragment() {
     private val viewModel: BackupViewModel by viewModels()
     private var _binding: FragmentBackupBinding? = null
     private lateinit var expenseList: MutableList<Expense>
@@ -109,13 +107,17 @@ class BackupFragment: Fragment() {
     }
 
     private fun updateSyncButtonState() {
-        binding.btnSync.isEnabled = expenseList.isNotEmpty() || budgetList.isNotEmpty() || walletList.isNotEmpty()
+        binding.btnSync.isEnabled =
+            expenseList.isNotEmpty() || budgetList.isNotEmpty() || walletList.isNotEmpty()
     }
 
     private fun initViews() {
         emailId = PreferenceHelper.getString(EMAIL_ID) ?: ""
         lastSyncTimeMillis = PreferenceHelper.getLong(LAST_SYNC_ON)
-        val lastSyncTime = if(lastSyncTimeMillis > 0) requireActivity().getRelativeTimeString(lastSyncTimeMillis) else getString(R.string.not_synced)
+        val lastSyncTime =
+            if (lastSyncTimeMillis > 0) requireActivity().getRelativeTimeString(lastSyncTimeMillis) else getString(
+                R.string.not_synced
+            )
         binding.valEmailId.text = emailId
         binding.valUserName.text = PreferenceHelper.getString(USER_NAME)
         binding.valLastSyncTime.text = lastSyncTime
@@ -131,32 +133,32 @@ class BackupFragment: Fragment() {
                 override fun onSuccess(account: GoogleSignInAccount) {
                     PreferenceHelper.putString(USER_NAME, "${account.displayName}")
                     PreferenceHelper.putString(EMAIL_ID, "${account.email}")
-                    Log.i("AAA","Google Auth Success: ${account.email}")
+                    Log.i("AAA", "Google Auth Success: ${account.email}")
                     lifecycleScope.launch(Dispatchers.IO) {
                         sheetsServiceHelper = SheetsServiceHelper(requireActivity(), account)
                         withContext(Dispatchers.Main) {
-                            exportExpenseToSheets()
+                            exportDataToSheets()
                         }
                     }
                 }
 
                 override fun onFailure(exception: Exception) {
-                    Log.i("AAA","Sign-in failed: ${exception.message}")
+                    Log.i("AAA", "Sign-in failed: ${exception.message}")
                 }
             }
         )
     }
 
-    private fun exportExpenseToSheets() {
+    private fun exportDataToSheets() {
         binding.progressBar.visibility = View.VISIBLE
         var spreadsheetId = PreferenceHelper.getString(SPREAD_SHEET_ID, null)
         lifecycleScope.launch {
             try {
-                val values = mutableListOf<List<Any>>().apply {
-                    if(spreadsheetId == null) {
+                // Prepare data for Expenses
+                val expenseValues = mutableListOf<List<Any>>().apply {
+                    if (spreadsheetId == null) {
                         add(listOf("Date", "Type", "Amount", "Notes", "CreatedAt", "UpdatedAt"))
                     }
-
                     addAll(expenseList.map { expense ->
                         listOf(
                             expense.date,
@@ -169,36 +171,111 @@ class BackupFragment: Fragment() {
                     })
                 }
 
+                // Prepare data for Budgets
+                val budgetValues = mutableListOf<List<Any>>().apply {
+                    if (spreadsheetId == null) {
+                        add(listOf("Type", "Amount", "MonthYear", "CreatedAt", "UpdatedAt"))
+                    }
+                    addAll(budgetList.map { budget ->
+                        listOf(
+                            budget.type,
+                            budget.amount,
+                            budget.monthYear,
+                            budget.createdAt,
+                            budget.updatedAt
+                        )
+                    })
+                }
+
+                // Prepare data for Wallets
+                val walletValues = mutableListOf<List<Any>>().apply {
+                    if (spreadsheetId == null) {
+                        add(listOf("Balance", "AddedAmount", "Notes", "CreatedAt", "UpdatedAt"))
+                    }
+                    addAll(walletList.map { wallet ->
+                        listOf(
+                            wallet.balance,
+                            wallet.addedAmount,
+                            wallet.notes,
+                            wallet.createdAt,
+                            wallet.updatedAt
+                        )
+                    })
+                }
+
                 // These will automatically use IO dispatcher from SheetsServiceHelper
-                if(spreadsheetId == null) {
-                    spreadsheetId = sheetsServiceHelper.createSpreadsheet("${getCurrentYearSheetName()}")
+                if (spreadsheetId == null) {
+                    spreadsheetId =
+                        sheetsServiceHelper.createSpreadsheet("${getCurrentYearSheetName()}")
                     sheetsServiceHelper.setupSpreadSheet(spreadsheetId)
                 }
 
-                val existingData = sheetsServiceHelper.readData(spreadsheetId, "A1:F") ?: emptyList()
-                Log.i("AAA", "Existing Data: ${Gson().toJson(existingData)}")
-                Log.i("AAA", "Existing Data Json: ${Gson().toJson(convertToList(existingData))}")
-                val nextRow = if (existingData.isNotEmpty() && existingData is List<*>) {
-                    existingData[0].size + 1
-                } else {
-                    1 // Start from the first row if no data exists
-                }
-                sheetsServiceHelper.writeData(spreadsheetId, "A$nextRow:F${nextRow + values.size - 1}", values)
-                //sheetsServiceHelper.writeData(spreadsheetId, "A1:F${values.size}", values)
+                // Write data to Expenses sheet
+                val existingExpenseData =
+                    sheetsServiceHelper.readData(spreadsheetId, "Expenses!A1:F") ?: emptyList()
+                val nextExpenseRow =
+                    if (existingExpenseData.isNotEmpty() && existingExpenseData is List<*>) {
+                        existingExpenseData[0].size + 1
+                    } else {
+                        1 // Start from the first row if no data exists
+                    }
+                sheetsServiceHelper.writeData(
+                    spreadsheetId,
+                    "Expenses!A$nextExpenseRow:F${nextExpenseRow + expenseValues.size - 1}",
+                    expenseValues
+                )
+
+                // Write data to Budgets sheet
+                val existingBudgetData =
+                    sheetsServiceHelper.readData(spreadsheetId, "Budgets!A1:E") ?: emptyList()
+                val nextBudgetRow =
+                    if (existingBudgetData.isNotEmpty() && existingBudgetData is List<*>) {
+                        existingBudgetData[0].size + 1
+                    } else {
+                        1 // Start from the first row if no data exists
+                    }
+                sheetsServiceHelper.writeData(
+                    spreadsheetId,
+                    "Budgets!A$nextBudgetRow:E${nextBudgetRow + budgetValues.size - 1}",
+                    budgetValues
+                )
+
+                // Write data to Wallet sheet
+                val existingWalletData =
+                    sheetsServiceHelper.readData(spreadsheetId, "Wallet!A1:E") ?: emptyList()
+                val nextWalletRow =
+                    if (existingWalletData.isNotEmpty() && existingWalletData is List<*>) {
+                        existingWalletData[0].size + 1
+                    } else {
+                        1 // Start from the first row if no data exists
+                    }
+                sheetsServiceHelper.writeData(
+                    spreadsheetId,
+                    "Wallet!A$nextWalletRow:E${nextWalletRow + walletValues.size - 1}",
+                    walletValues
+                )
+
                 Log.i("AAA", "Data written successfully to spreadsheet")
                 val spreadsheetUrl = "https://docs.google.com/spreadsheets/d/$spreadsheetId"
                 PreferenceHelper.putString(SPREAD_SHEET_ID, spreadsheetId)
                 PreferenceHelper.putString(SPREAD_SHEET_URL, spreadsheetUrl)
                 PreferenceHelper.putLong(LAST_SYNC_ON, System.currentTimeMillis())
-                viewModel.addSheet(MySheet(sheetName = spreadsheetId, sheetLink=spreadsheetUrl, email=emailId))
+                viewModel.addSheet(
+                    MySheet(
+                        sheetName = spreadsheetId,
+                        sheetLink = spreadsheetUrl,
+                        email = emailId
+                    )
+                )
+
                 binding.btnSync.isEnabled = false
                 binding.progressBar.visibility = View.GONE
                 ToastUtils.showLong(requireActivity(), getString(R.string.sync_success))
-                Log.i("AAA","$spreadsheetUrl")
+                Log.i("AAA", "$spreadsheetUrl")
             } catch (e: Exception) {
                 ToastUtils.showLong(requireActivity(), getString(R.string.sync_fail))
                 binding.progressBar.visibility = View.GONE
-                Log.i("AAA","Error during export: ${e.message}")
+                Log.i("AAA", "Error during export: ${e.message}")
                 Log.e("SheetsExport", "Export failed", e)
             }
         }
@@ -212,7 +289,7 @@ class BackupFragment: Fragment() {
             lifecycleScope.launch(Dispatchers.IO) {
                 sheetsServiceHelper = SheetsServiceHelper(requireActivity(), account)
                 withContext(Dispatchers.Main) {
-                    exportExpenseToSheets()
+                    exportDataToSheets()
                 }
             }
         } else {
