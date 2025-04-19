@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.dolphin.expenseease.R
 import com.dolphin.expenseease.data.db.reminder.Reminder
 import com.dolphin.expenseease.databinding.ItemReminderBinding
 import com.dolphin.expenseease.listeners.ReminderEditListener
@@ -34,6 +35,14 @@ class ReminderAdapter(private val context: Context, private val list: MutableLis
             view.textNotes.text = reminder.notes
             view.textDateTime.text = "${reminder.dateTime}"
             view.textCreatedAt.text = context.getRelativeTimeString(reminder.updatedAt)
+
+            if (System.currentTimeMillis() > reminder.getMillis()) {
+                view.txtStatus.text = context.getString(R.string.lbl_elapsed)
+                view.txtStatus.setTextColor(context.getColor(R.color.color_elapsed))
+            } else {
+                view.txtStatus.text = context.getString(R.string.lbl_upcoming)
+                view.txtStatus.setTextColor(context.getColor(R.color.color_upcoming))
+            }
             view.imgEdit.setOnClickListener { listener.onReminderEdit(reminder, position) }
             view.imgDelete.setOnClickListener { listener.onReminderRemove(reminder, position) }
         }

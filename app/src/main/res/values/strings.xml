@@ -28,6 +28,8 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="currency_detail">Currency Detail</string>
+    <string name="permission_req">Enable Alarms</string>
+    <string name="reminder_permission_msg">Please enable Alarms and reminders in settings</string>
     <string name="delete">Delete</string>
     <string name="del_msg">Are you sure want to delete the item?</string>
     <string name="add_expense">Add Expense</string>
@@ -42,6 +44,8 @@
     <string name="currentcy_name">Currentcy Name</string>
     <string name="currency_code">Currency Code</string>
     <string name="currency_symbol">Currency Symbol</string>
+    <string name="lbl_elapsed">Elapsed</string>
+    <string name="lbl_upcoming">Upcoming</string>
 
     <string-array name="expense_types" >
         <item>Food</item>

@@ -49,7 +49,7 @@ class HomeFragment : Fragment() {
     private fun initObservers() {
         viewModel.allExpenses.observe(viewLifecycleOwner) {
             expenseList.clear()
-            expenseList.addAll(it)
+            expenseList.addAll(it.sortedByDescending { expense -> expense.createdAt })
             expenseAdapter.notifyDataSetChanged()
             setView(expenseList.isNotEmpty())
         }
