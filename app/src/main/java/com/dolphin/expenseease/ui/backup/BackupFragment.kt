@@ -154,7 +154,7 @@ class BackupFragment: Fragment() {
             try {
                 val values = mutableListOf<List<Any>>().apply {
                     if(spreadsheetId == null) {
-                        add(listOf("Date", "Type", "Amount", "Notes"))
+                        add(listOf("Date", "Type", "Amount", "Notes", "CreatedAt", "UpdatedAt"))
                     }
 
                     addAll(expenseList.map { expense ->
@@ -162,23 +162,25 @@ class BackupFragment: Fragment() {
                             expense.date,
                             expense.type,
                             expense.amount,
-                            expense.notes
+                            expense.notes,
+                            expense.createdAt,
+                            expense.updatedAt
                         )
                     })
                 }
 
                 // These will automatically use IO dispatcher from SheetsServiceHelper
                 spreadsheetId = spreadsheetId ?: sheetsServiceHelper.createSpreadsheet("${getCurrentYearSheetName()}")
-                val existingData = sheetsServiceHelper.readData(spreadsheetId, "A1:D") ?: emptyList()
+                val existingData = sheetsServiceHelper.readData(spreadsheetId, "A1:F") ?: emptyList()
                 Log.i("AAA", "Existing Data: ${Gson().toJson(existingData)}")
-                Log.i("AAA", "Existing Data: ${Gson().toJson(convertToList(existingData))}")
+                Log.i("AAA", "Existing Data Json: ${Gson().toJson(convertToList(existingData))}")
                 val nextRow = if (existingData.isNotEmpty() && existingData is List<*>) {
                     existingData[0].size + 1
                 } else {
                     1 // Start from the first row if no data exists
                 }
-                sheetsServiceHelper.writeData(spreadsheetId, "A$nextRow:D${nextRow + values.size - 1}", values)
-                //sheetsServiceHelper.writeData(spreadsheetId, "A1:D${values.size}", values)
+                sheetsServiceHelper.writeData(spreadsheetId, "A$nextRow:F${nextRow + values.size - 1}", values)
+                //sheetsServiceHelper.writeData(spreadsheetId, "A1:F${values.size}", values)
                 Log.i("AAA", "Data written successfully to spreadsheet")
                 val spreadsheetUrl = "https://docs.google.com/spreadsheets/d/$spreadsheetId"
                 PreferenceHelper.putString(SPREAD_SHEET_ID, spreadsheetId)

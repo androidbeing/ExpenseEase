@@ -2,14 +2,17 @@ package com.dolphin.expenseease.ui.home
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dolphin.expenseease.R
 import com.dolphin.expenseease.data.db.expense.Expense
 import com.dolphin.expenseease.databinding.ItemExpenseBinding
 import com.dolphin.expenseease.listeners.ExpenseEditListener
+import com.dolphin.expenseease.utils.Constants.LAST_SYNC_ON
 import com.dolphin.expenseease.utils.CurrencyManager
 import com.dolphin.expenseease.utils.ExtensiveFunctions.getRelativeTimeString
+import com.dolphin.expenseease.utils.PreferenceHelper
 
 class ExpenseAdapter(private val context: Context, private val list: MutableList<Expense>, private val listener: ExpenseEditListener) :
     RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() {
@@ -33,6 +36,15 @@ class ExpenseAdapter(private val context: Context, private val list: MutableList
     class ExpenseViewHolder(private val context: Context, private val listener: ExpenseEditListener, private val view: ItemExpenseBinding) :
         RecyclerView.ViewHolder(view.root) {
         fun bindItems(expense: Expense, position: Int) {
+            val lastSyncTime = PreferenceHelper.getLong(LAST_SYNC_ON)
+            if(expense.createdAt > lastSyncTime) {
+                view.imgEdit.visibility = View.VISIBLE
+                view.imgDelete.visibility = View.VISIBLE
+            } else {
+                view.imgEdit.visibility = View.GONE
+                view.imgDelete.visibility = View.GONE
+            }
+
             val currencySymbol = CurrencyManager.getCurrencySymbol(context)
             view.textAmount.text = "$currencySymbol ${expense.amount}"
             view.txtExpense.text = expense.notes

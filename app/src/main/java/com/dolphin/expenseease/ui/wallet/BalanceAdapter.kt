@@ -2,13 +2,16 @@ package com.dolphin.expenseease.ui.wallet
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dolphin.expenseease.data.db.wallet.MyWallet
 import com.dolphin.expenseease.databinding.ItemWalletBinding
 import com.dolphin.expenseease.listeners.WalletEditListener
+import com.dolphin.expenseease.utils.Constants.LAST_SYNC_ON
 import com.dolphin.expenseease.utils.CurrencyManager
 import com.dolphin.expenseease.utils.ExtensiveFunctions.getRelativeTimeString
+import com.dolphin.expenseease.utils.PreferenceHelper
 
 class BalanceAdapter(
     private val context: Context,
@@ -37,6 +40,15 @@ class BalanceAdapter(
                         private val listener: WalletEditListener) :
         RecyclerView.ViewHolder(view.root) {
         fun bindItems(wallet: MyWallet, position: Int) {
+            val lastSyncTime = PreferenceHelper.getLong(LAST_SYNC_ON)
+            if(wallet.createdAt > lastSyncTime) {
+                view.imgEdit.visibility = View.VISIBLE
+                view.imgDelete.visibility = View.VISIBLE
+            } else {
+                view.imgEdit.visibility = View.GONE
+                view.imgDelete.visibility = View.GONE
+            }
+
             val currencySymbol = CurrencyManager.getCurrencySymbol(context)
             view.textAmount.text = "$currencySymbol ${wallet.addedAmount}"
             view.textNotes.text = wallet.notes

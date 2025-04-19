@@ -16,15 +16,21 @@ object SheetUtils {
     }
 
     fun convertToList(existingData: List<List<Any>>): List<Expense> {
-        val expenses = existingData.drop(1).mapNotNull { row ->
-            if (row is List<*> && row.size == 4) {
+        if (existingData.isEmpty() && existingData[0].isEmpty()) {
+            Log.e("AAA", "No data found in the spreadsheet.")
+            return emptyList()
+        }
+        val expenses = existingData[0].drop(1).mapNotNull { row ->
+            if (row is List<*> && row.size == 6) {
                 try {
                     Expense(
                         id = 0, // Assign a default or unique ID if needed
                         date = row[0] as String,
                         type = row[1] as String,
                         amount = (row[2] as String).toDouble(),
-                        notes = row[3] as String
+                        notes = row[3] as String,
+                        createdAt = (row[4] as String).toLong(),
+                        updatedAt = (row[5] as String).toLong()
                     )
                 } catch (e: Exception) {
                     Log.e("AAA", "Error parsing row: $row", e)
