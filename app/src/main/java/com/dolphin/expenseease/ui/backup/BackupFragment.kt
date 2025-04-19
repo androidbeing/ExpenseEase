@@ -170,7 +170,11 @@ class BackupFragment: Fragment() {
                 }
 
                 // These will automatically use IO dispatcher from SheetsServiceHelper
-                spreadsheetId = spreadsheetId ?: sheetsServiceHelper.createSpreadsheet("${getCurrentYearSheetName()}")
+                if(spreadsheetId == null) {
+                    spreadsheetId = sheetsServiceHelper.createSpreadsheet("${getCurrentYearSheetName()}")
+                    sheetsServiceHelper.setupSpreadSheet(spreadsheetId)
+                }
+
                 val existingData = sheetsServiceHelper.readData(spreadsheetId, "A1:F") ?: emptyList()
                 Log.i("AAA", "Existing Data: ${Gson().toJson(existingData)}")
                 Log.i("AAA", "Existing Data Json: ${Gson().toJson(convertToList(existingData))}")
