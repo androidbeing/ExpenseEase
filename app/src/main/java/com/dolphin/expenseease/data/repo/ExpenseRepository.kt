@@ -25,6 +25,9 @@ class ExpenseRepository @Inject constructor(
     suspend fun insertExpense(expense: Expense) = expenseDao.insert(expense)
     suspend fun updateExpense(expense: Expense) = expenseDao.update(expense)
     suspend fun deleteExpense(expense: Expense) = expenseDao.delete(expense)
+    fun getExpenseAmountAddedBetween(startTime: Long, endTime: Long): Double {
+        return expenseDao.getExpenseAmountAddedBetween(startTime, endTime)
+    }
 
     fun getAllBudgets(): LiveData<List<Budget>> = budgetDao.getAll()
 
@@ -45,6 +48,10 @@ class ExpenseRepository @Inject constructor(
     fun getAllWallets(): LiveData<List<MyWallet>> = walletDao.getAll()
 
     fun getLatestWallet(): LiveData<MyWallet> = walletDao.getLatestBalance()
+
+    fun getWalletAmountAddedBetween(startTime: Long, endTime: Long): Double {
+        return walletDao.getWalletAmountAddedBetween(startTime, endTime)
+    }
 
     suspend fun insertWallet(wallet: MyWallet) = walletDao.insert(wallet)
 

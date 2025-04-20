@@ -45,6 +45,9 @@
     <string name="last_synced_on">Last Sync On</string>
     <string name="username">User Name</string>
     <string name="user_email">Email ID</string>
+    <string name="wall_added_current_month">Added (This Month)</string>
+    <string name="wall_avl_balance">Available Balance</string>
+    <string name="wall_used_current_month">Used (This Month)</string>
     <string name="currency_name">Currency Name</string>
     <string name="currency_code">Currency Code</string>
     <string name="currency_symbol">Currency Symbol</string>

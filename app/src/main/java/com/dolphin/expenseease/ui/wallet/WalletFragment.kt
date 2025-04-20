@@ -15,6 +15,7 @@ import com.dolphin.expenseease.databinding.FragmentWalletBinding
 import com.dolphin.expenseease.listeners.AddBalanceListener
 import com.dolphin.expenseease.listeners.OnClickAlertListener
 import com.dolphin.expenseease.listeners.WalletEditListener
+import com.dolphin.expenseease.utils.CurrencyManager
 import com.dolphin.expenseease.utils.DialogUtils.showAlertDialog
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,6 +23,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.dolphin.expenseease.utils.DateUtils.getCurrentTimeInMillis
+import com.dolphin.expenseease.utils.DateUtils.getStartOfMonthInMillis
 
 @AndroidEntryPoint
 class WalletFragment : Fragment() {
@@ -33,17 +36,23 @@ class WalletFragment : Fragment() {
     private lateinit var balanceList: MutableList<MyWallet>
     private var updateIndex: Int = -1
     private var latestBalance = 0.0
+    private var avlBalance = 0.0
+    private var currencySymbol: String = "INR"
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        currencySymbol = CurrencyManager.getCurrencySymbol(requireActivity())!!
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentWalletBinding.inflate(inflater, container, false)
         val root: View = binding.root
         initViews()
@@ -103,16 +112,19 @@ class WalletFragment : Fragment() {
                         updatedAt = System.currentTimeMillis()
                     )
                     if (walletToUpdate == null) {
+                        avlBalance += newBalance.addedAmount
+                        binding.valAvlBal.text = "$currencySymbol $avlBalance"
                         viewModel.addBalance(newBalance)
                     } else {
                         requireActivity().runOnUiThread {
+                            avlBalance += if(walletToUpdate.addedAmount > newBalance.balance) walletToUpdate.addedAmount - newBalance.addedAmount else newBalance.addedAmount - walletToUpdate.addedAmount
+                            binding.valAvlBal.text = "$currencySymbol $avlBalance"
+
                             balanceList[updateIndex] = newBalance
                             balanceAdapter.notifyItemChanged(updateIndex)
                             viewModel.updateWallet(newBalance)
                         }
                     }
-
-
                 }
             }
         })
@@ -131,7 +143,17 @@ class WalletFragment : Fragment() {
         viewModel.getLatestBalance().observe(viewLifecycleOwner) { walletLatest ->
             if(walletLatest != null) {
                 this.latestBalance = walletLatest?.balance ?: 0.0
+                binding.valTotalBal.text = "$currencySymbol ${this.latestBalance}"
             }
+        }
+
+        val startOfMonth = getStartOfMonthInMillis()
+        val currentTime = getCurrentTimeInMillis()
+        viewModel.getWalletAmountAddedThisMonth(startOfMonth, currentTime).observe(viewLifecycleOwner) { amount ->
+            binding.valUsedBal.text = "$currencySymbol $amount"
+            this.avlBalance = this.latestBalance - amount
+            binding.valAvlBal.text = "$currencySymbol $avlBalance"
+            println("Wallet amount added this month: $amount")
         }
     }
 

@@ -26,6 +26,9 @@ interface MyWalletDao {
     @Query("SELECT * FROM my_wallet ORDER BY id DESC LIMIT 1")
     fun getLatestBalance(): LiveData<MyWallet>
 
+    @Query("SELECT SUM(added_amount) FROM my_wallet WHERE created_at BETWEEN :startTime AND :endTime")
+    fun getWalletAmountAddedBetween(startTime: Long, endTime: Long): Double
+
     @Delete
     fun delete(wallet: MyWallet)
 }

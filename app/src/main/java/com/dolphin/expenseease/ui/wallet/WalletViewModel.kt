@@ -33,6 +33,17 @@ class WalletViewModel @Inject constructor(
         }
     }
 
+    fun getWalletAmountAddedThisMonth(startMillis: Long, endMillis: Long): LiveData<Double> {
+        val liveData = androidx.lifecycle.MutableLiveData<Double>()
+        viewModelScope.launch {
+            val amount = withContext(Dispatchers.IO) {
+                repository.getExpenseAmountAddedBetween(startMillis, endMillis)
+            }
+            liveData.postValue(amount)
+        }
+        return liveData
+    }
+
     fun deleteWallet(wallet: MyWallet) = viewModelScope.launch {
         val data = withContext(Dispatchers.IO) {
             repository.deleteWallet(wallet)

@@ -23,6 +23,9 @@ interface ExpenseDao {
     @Query("UPDATE expense SET amount = :amount WHERE id = :id")
     fun updateAmountById(id: Int, amount: Double)
 
+    @Query("SELECT SUM(amount) FROM expense WHERE created_at BETWEEN :startTime AND :endTime")
+    fun getExpenseAmountAddedBetween(startTime: Long, endTime: Long): Double
+
     @Delete
     fun delete(expense: Expense)
 }
