@@ -8,8 +8,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import com.dolphin.expenseease.R
+import android.view.View
 import com.dolphin.expenseease.data.model.Alert
 import com.dolphin.expenseease.listeners.OnClickAlertListener
+import com.dolphin.expenseease.utils.Constants.LBL_NA
 
 object DialogUtils {
 
@@ -24,6 +26,8 @@ object DialogUtils {
         val noBtn = alertDialog.findViewById<AppCompatButton>(R.id.btnNo)
         okBtn.text = alert.positiveButtonText
         noBtn.text = alert.negativeButtonText
+
+        noBtn.visibility = if(alert.negativeButtonText == LBL_NA) View.INVISIBLE else View.VISIBLE
 
         val dialog: AlertDialog = builder.create()
         okBtn.setOnClickListener {

@@ -10,4 +10,5 @@ object Constants {
     const val USER_NAME = "USER_NAME"
     const val EMAIL_ID = "EMAIL_ID"
     const val LAST_SYNC_ON = "LAST_SYNC_ON"
+    const val LBL_NA = "NA"
 }

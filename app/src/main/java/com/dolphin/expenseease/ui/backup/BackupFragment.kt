@@ -4,7 +4,6 @@ import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -18,6 +17,7 @@ import com.dolphin.expenseease.utils.Constants.EMAIL_ID
 import com.dolphin.expenseease.utils.Constants.LAST_SYNC_ON
 import com.dolphin.expenseease.utils.Constants.SPREAD_SHEET_ID
 import com.dolphin.expenseease.utils.Constants.SPREAD_SHEET_URL
+import com.dolphin.expenseease.utils.Constants.LBL_NA
 import com.dolphin.expenseease.utils.Constants.USER_NAME
 import com.dolphin.expenseease.utils.ExtensiveFunctions.getRelativeTimeString
 import com.dolphin.expenseease.utils.PreferenceHelper
@@ -31,9 +31,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.getValue
+import android.view.View
 import com.dolphin.expenseease.R
 import com.dolphin.expenseease.data.db.sheet.MySheet
+import com.dolphin.expenseease.data.model.Alert
+import com.dolphin.expenseease.listeners.OnClickAlertListener
 import com.dolphin.expenseease.utils.ToastUtils
+import com.dolphin.expenseease.utils.DialogUtils.showAlertDialog
 
 @AndroidEntryPoint
 class BackupFragment : Fragment() {
@@ -112,6 +116,16 @@ class BackupFragment : Fragment() {
     }
 
     private fun initViews() {
+        setLabel()
+        binding.btnSync.setOnClickListener {
+            checkAndSyncData()
+        }
+        binding.imgSignout.setOnClickListener {
+            googleSignInHelper.signOut()
+        }
+    }
+
+    private fun setLabel() {
         emailId = PreferenceHelper.getString(EMAIL_ID) ?: ""
         lastSyncTimeMillis = PreferenceHelper.getLong(LAST_SYNC_ON)
         val lastSyncTime =
@@ -121,29 +135,46 @@ class BackupFragment : Fragment() {
         binding.valEmailId.text = emailId
         binding.valUserName.text = PreferenceHelper.getString(USER_NAME)
         binding.valLastSyncTime.text = lastSyncTime
-
-        binding.btnSync.setOnClickListener {
-            checkAndSyncData()
-        }
     }
 
     private fun initGoogle() {
         googleSignInHelper = GoogleSignInHelper(
             requireActivity(), object : GoogleSignInHelper.GoogleSignInCallback {
                 override fun onSuccess(account: GoogleSignInAccount) {
-                    PreferenceHelper.putString(USER_NAME, "${account.displayName}")
-                    PreferenceHelper.putString(EMAIL_ID, "${account.email}")
-                    Log.i("AAA", "Google Auth Success: ${account.email}")
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        sheetsServiceHelper = SheetsServiceHelper(requireActivity(), account)
-                        withContext(Dispatchers.Main) {
-                            exportDataToSheets()
+                    if (account != null) {
+                        PreferenceHelper.putString(USER_NAME, "${account.displayName}")
+                        PreferenceHelper.putString(EMAIL_ID, "${account.email}")
+                        binding.imgSignout.visibility = View.VISIBLE
+                        Log.i("AAA", "Google Auth Success: ${account.email}")
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            sheetsServiceHelper = SheetsServiceHelper(requireActivity(), account)
+                            withContext(Dispatchers.Main) {
+                                exportDataToSheets()
+                            }
                         }
                     }
                 }
 
                 override fun onFailure(exception: Exception) {
                     Log.i("AAA", "Sign-in failed: ${exception.message}")
+                }
+
+                override fun onSuccess() {
+                    binding.imgSignout.visibility = View.INVISIBLE
+                    val emailId = PreferenceHelper.getString(EMAIL_ID) ?: ""
+                    val alert = Alert(
+                        getString(R.string.lbl_signout),
+                        getString(R.string.successfully_logout_from, emailId),
+                        getString(R.string.okay),
+                        LBL_NA
+                    )
+                    showAlertDialog(requireActivity(), alert, object : OnClickAlertListener {
+                        override fun onAcknowledge(isOkay: Boolean) {
+                            PreferenceHelper.putString(USER_NAME, "")
+                            PreferenceHelper.putString(EMAIL_ID, "")
+                            setLabel()
+                        }
+                    })
                 }
             }
         )

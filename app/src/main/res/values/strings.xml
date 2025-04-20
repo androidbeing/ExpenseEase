@@ -52,6 +52,8 @@
     <string name="lbl_upcoming">Upcoming</string>
     <string name="sync_to_google_sheets">Sync to Google Sheets</string>
     <string name="not_synced">Not synced yet</string>
+    <string name="lbl_signout">Signed out</string>
+    <string name="successfully_logout_from">Successfully signed out from %s</string>
     <string name="sync_success">Data synced successfully!</string>
     <string name="sync_fail">Data Sync failed!</string>
 

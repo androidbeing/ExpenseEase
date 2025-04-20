@@ -17,6 +17,7 @@ class GoogleSignInHelper(
     interface GoogleSignInCallback {
         fun onSuccess(account: GoogleSignInAccount)
         fun onFailure(exception: Exception)
+        fun onSuccess()
     }
 
     companion object {
@@ -56,5 +57,18 @@ class GoogleSignInHelper(
         } catch (e: ApiException) {
             callback.onFailure(e)
         }
+    }
+
+    fun signOut() {
+        googleSignInClient.signOut()
+            .addOnCompleteListener(activity) { task ->
+                if (task.isSuccessful) {
+                    // Sign-out successful, proceed with any post sign-out actions
+                    callback.onSuccess() // Notify success with no account
+                } else {
+                    // Handle sign-out failure
+                    callback.onFailure(task.exception ?: Exception("Sign-out failed"))
+                }
+            }
     }
 }
