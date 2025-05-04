@@ -11,7 +11,7 @@ import com.dolphin.expenseease.data.db.expense.Expense
 import com.dolphin.expenseease.databinding.SheetAddExpenseBinding
 import com.dolphin.expenseease.listeners.AddExpenseListener
 import com.dolphin.expenseease.listeners.MonthListener
-import com.dolphin.expenseease.utils.Constants.DATE_FORMAT
+import com.dolphin.expenseease.utils.Constants.SQLITE_DATE_FORMAT
 import com.dolphin.expenseease.utils.DateUtils.getTodayDate
 import com.dolphin.expenseease.utils.DateUtils.showMonthYearPicker
 import com.dolphin.expenseease.utils.ExtensiveFunctions.showToast
@@ -71,7 +71,7 @@ class AddExpenseSheet(private val expense: Expense? = null, private val listener
 
                     binding.txtDate.setText(monthYear)
                 }
-            }, DATE_FORMAT, minDate, maxDate)
+            }, SQLITE_DATE_FORMAT, minDate, maxDate)
         }
 
         binding.btnAdd.setOnClickListener {

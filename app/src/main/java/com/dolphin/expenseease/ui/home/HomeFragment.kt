@@ -15,6 +15,9 @@ import com.dolphin.expenseease.listeners.AddExpenseListener
 import com.dolphin.expenseease.listeners.ExpenseEditListener
 import com.dolphin.expenseease.listeners.OnClickAlertListener
 import com.dolphin.expenseease.ui.main.MainViewModel
+import com.dolphin.expenseease.utils.CurrencyManager
+import com.dolphin.expenseease.utils.DateUtils.getStartOfCurrentMonthInMillis
+import com.dolphin.expenseease.utils.DateUtils.getTodayStartInMillis
 import com.dolphin.expenseease.utils.DialogUtils.showAlertDialog
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,6 +28,9 @@ class HomeFragment : Fragment() {
     private lateinit var expenseAdapter: ExpenseAdapter
     private lateinit var expenseList: MutableList<Expense>
     private var updateIndex: Int = -1
+    private var currencySymbol: String = "INR"
+    private var currentMonthExpense: Double = 0.0
+    private var totalBalanceAdded: Double = 0.0
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -33,6 +39,7 @@ class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         expenseList = mutableListOf()
+        currencySymbol = CurrencyManager.getCurrencySymbol(requireActivity())!!
     }
 
     override fun onCreateView(
@@ -100,6 +107,30 @@ class HomeFragment : Fragment() {
         })
         binding.recyclerExpenses.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerExpenses.adapter = expenseAdapter
+
+        val startDate = getTodayStartInMillis()
+        val startWeekAgoDate = getStartOfCurrentMonthInMillis()
+        val endDate = System.currentTimeMillis()
+
+        viewModel.fetchTotalAmountSpent(startDate, endDate)
+        viewModel.fetchTotalAmountThisMonth(startWeekAgoDate, endDate)
+
+        viewModel.getLatestBalance().observe(viewLifecycleOwner) { walletLatest ->
+            if(walletLatest != null) {
+                this.totalBalanceAdded = walletLatest?.balance ?: 0.0
+                binding.valAvlBal.text = "$currencySymbol ${totalBalanceAdded - this.currentMonthExpense}"
+            }
+        }
+
+        viewModel.totalAmountSpent.observe(viewLifecycleOwner) { totalAmount ->
+            binding.valTodayExpense.text = "$currencySymbol $totalAmount"
+        }
+
+        viewModel.totalAmountThisMonth.observe(viewLifecycleOwner) { totalAmount ->
+            this.currentMonthExpense = totalAmount
+            binding.valThisMonthExpense.text = "$currencySymbol $totalAmount"
+            binding.valAvlBal.text = "$currencySymbol ${totalBalanceAdded - this.currentMonthExpense}"
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

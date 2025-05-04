@@ -14,6 +14,40 @@ import java.util.*
 
 object DateUtils {
 
+    fun getNDaysBeforeMillis(todayMillis: Long, n: Int): Long {
+        val millisInADay = 24 * 60 * 60 * 1000 // Milliseconds in a day
+        return todayMillis - (n * millisInADay)
+    }
+
+    fun getStartOfCurrentMonthInMillis(): Long {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        return calendar.timeInMillis
+    }
+
+    fun getTodayStartInMillis(): Long {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        return calendar.timeInMillis
+    }
+
+    fun parseDateToMillis(dateString: String, format: String = "dd/MM/yyyy"): Long {
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
+        return sdf.parse(dateString)?.time ?: 0L
+    }
+
+    fun formatMillisToDate(millis: Long, format: String = "dd/MM/yyyy"): String {
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
+        return sdf.format(Date(millis))
+    }
+
     fun getTodayDate(): String {
         val currentDate = Date()
         val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())

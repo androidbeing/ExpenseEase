@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="4dp"
     app:cardElevation="2dp"
     app:cardUseCompatPadding="true">
 
@@ -17,10 +17,10 @@
             android:id="@+id/txtExpense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:maxLength="100"
+            android:maxLines="2"
             android:text="Bought a BMW Car"
-            android:textColor="@color/purple_200"
+            android:textColor="@color/colorPrimaryText"
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,13 +30,13 @@
             android:id="@+id/textType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             android:fontFamily="@font/open_sans"
             android:maxLength="100"
             android:text="Transport"
             android:textSize="13sp"
-            app:fontFamily="@font/open_sans_italic"
-            app:layout_constraintEnd_toEndOf="@+id/txtExpense"
+            app:fontFamily="@font/open_sans_semibold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/txtExpense"
             app:layout_constraintTop_toBottomOf="@+id/txtExpense" />
 
@@ -47,24 +47,26 @@
             android:layout_marginVertical="4dp"
             android:fontFamily="@font/open_sans_semibold"
             android:maxLength="10"
-            android:text="INR 15000000"
-            android:textAlignment="textStart"
+            android:text="INR 1500"
+            android:textAlignment="textEnd"
             android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="@+id/textType"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textType" />
+            android:textColor="@color/purple_200"
+            app:layout_constraintBottom_toBottomOf="@+id/textType"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@+id/textType" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textDateTime"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans_italic"
+            android:fontFamily="@font/open_sans"
             android:maxLength="50"
             android:text="A month ago"
             android:textAlignment="textStart"
             android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txtSpentOn"
@@ -73,37 +75,36 @@
             android:fontFamily="@font/open_sans"
             android:maxLength="50"
             android:text="08/04/2025"
+            android:layout_marginTop="2dp"
             android:textAlignment="textStart"
             android:textSize="12sp"
-            android:layout_marginVertical="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/textAmount"
-            app:layout_constraintTop_toBottomOf="@+id/textAmount" />
+            app:layout_constraintStart_toStartOf="@+id/textType"
+            app:layout_constraintTop_toBottomOf="@+id/textType" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent=".75" />
-
-        <ImageView
-            android:id="@+id/imgEdit"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
+            app:layout_constraintGuide_percent="0.8" />
 
 
         <ImageView
             android:id="@+id/imgDelete"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/imgEdit"
-            app:layout_constraintTop_toTopOf="@+id/imgEdit"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@android:drawable/ic_menu_delete" />
+
+        <ImageView
+            android:id="@+id/imgEdit"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imgDelete"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -35,7 +35,7 @@
     <string name="del_msg">Are you sure want to delete the item?</string>
     <string name="add_expense">Add Expense</string>
     <string name="notes">Notes</string>
-    <string name="spent_on">Spent on %s</string>
+    <string name="spent_on">%s</string>
     <string name="enter_amount">Please enter an amount</string>
     <string name="add_budget">Add Budget</string>
     <string name="month_year">Month/Year</string>
@@ -56,6 +56,9 @@
     <string name="sync_to_google_sheets">Sync to Google Sheets</string>
     <string name="not_synced">Not synced yet</string>
     <string name="lbl_signout">Signed out</string>
+    <string name="lbl_expenses_today">Today Expenses </string>
+    <string name="lbl_expenses_7_days">Last 7 days expenses</string>
+    <string name="lbl_expenses_this_month">Current Month expenses</string>
     <string name="successfully_logout_from">Successfully signed out from %s</string>
     <string name="sync_success">Data synced successfully!</string>
     <string name="sync_fail">Data Sync failed!</string>
@@ -63,18 +66,20 @@
     <string name="default_web_client_id">161874295130-cj70qk48ndrd5ugkp60sr6e42dai4ajo.apps.googleusercontent.com</string>
 
     <string-array name="expense_types" >
-        <item>Food</item>
         <item>Clothes</item>
-        <item>Fuel</item>
-        <item>Transport</item>
-        <item>Education</item>
-        <item>Groceries</item>
         <item>Debt Payment</item>
-        <item>Gift</item>
         <item>Donation</item>
+        <item>Education</item>
+        <item>Entertainment</item>
+        <item>Food</item>
+        <item>Fuel</item>
+        <item>Gift</item>
+        <item>Groceries</item>
         <item>Health</item>
         <item>Insurance</item>
-        <item>Vehicles</item>
         <item>Others</item>
+        <item>Rent</item>
+        <item>Travel</item>
+        <item>Vehicles</item>
     </string-array>
 </resources>

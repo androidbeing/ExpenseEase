@@ -99,7 +99,7 @@ dependencies {
     // Room
     implementation(libs.room.runtime)
     kapt(libs.room.compiler)
-    //implementation(libs.room.ktx)
+    implementation libs.room.ktx
 
     // Retrofit
     implementation(libs.retrofit)

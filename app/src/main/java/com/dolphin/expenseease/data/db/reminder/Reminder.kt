@@ -3,7 +3,7 @@ package com.dolphin.expenseease.data.db.reminder
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.dolphin.expenseease.utils.Constants.DATE_TIME_FORMAT
+import com.dolphin.expenseease.utils.Constants.REMINDER_DATE_TIME_FORMAT
 
 @Entity(tableName = "reminders")
 data class Reminder(
@@ -15,7 +15,7 @@ data class Reminder(
 ) {
     fun getMillis(): Long {
         return try {
-            val formatter = java.text.SimpleDateFormat(DATE_TIME_FORMAT, java.util.Locale.getDefault())
+            val formatter = java.text.SimpleDateFormat(REMINDER_DATE_TIME_FORMAT, java.util.Locale.getDefault())
             formatter.parse(dateTime)?.time ?: System.currentTimeMillis()
         } catch (e: Exception) {
             System.currentTimeMillis()

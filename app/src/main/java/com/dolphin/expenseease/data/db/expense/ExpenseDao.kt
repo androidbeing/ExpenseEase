@@ -20,6 +20,15 @@ interface ExpenseDao {
     @Update
     fun update(expense: Expense)
 
+    @Query("SELECT SUM(amount) FROM expense WHERE date BETWEEN :startDate AND :endDate")
+    suspend fun getTotalAmountSpent(startDate: Long, endDate: Long): Double
+
+    /*@Query("SELECT SUM(amount) FROM expense WHERE strftime('%s', date) * 1000 BETWEEN :startDate AND :endDate")
+    suspend fun getTotalAmountSpentWithDate(startDate: Long, endDate: Long): Double*/
+
+    @Query("SELECT SUM(amount) FROM expense WHERE strftime('%s', substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2)) * 1000 BETWEEN :startDate AND :endDate")
+    suspend fun getTotalAmountSpentWithDate(startDate: Long, endDate: Long): Double
+
     @Query("UPDATE expense SET amount = :amount WHERE id = :id")
     fun updateAmountById(id: Int, amount: Double)
 

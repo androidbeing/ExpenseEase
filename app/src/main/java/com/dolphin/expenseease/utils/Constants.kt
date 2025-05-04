@@ -3,7 +3,9 @@ package com.dolphin.expenseease.utils
 object Constants {
 
     const val MONTH_YEAR_FORMAT = "MMM yyyy"
+    const val SQLITE_DATE_FORMAT = "yyyy-MM-dd"
     const val DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss"
+    const val REMINDER_DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm"
     const val DATE_FORMAT = "dd/MM/yyyy"
     const val SPREAD_SHEET_ID = "SPREAD_SHEET_ID"
     const val SPREAD_SHEET_URL = "SPREAD_SHEET_URL"

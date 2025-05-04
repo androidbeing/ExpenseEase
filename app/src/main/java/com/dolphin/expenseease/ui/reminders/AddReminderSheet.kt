@@ -11,7 +11,7 @@ import com.dolphin.expenseease.data.db.reminder.Reminder
 import com.dolphin.expenseease.databinding.SheetAddReminderBinding
 import com.dolphin.expenseease.listeners.AddReminderListener
 import com.dolphin.expenseease.listeners.MonthListener
-import com.dolphin.expenseease.utils.Constants.DATE_TIME_FORMAT
+import com.dolphin.expenseease.utils.Constants.REMINDER_DATE_TIME_FORMAT
 import com.dolphin.expenseease.utils.DateUtils.showDateTimePicker
 import com.dolphin.expenseease.utils.ExtensiveFunctions.showToast
 import com.dolphin.expenseease.utils.capitalizeFirstLetter
@@ -58,7 +58,7 @@ class AddReminderSheet(private val reminder: Reminder? = null, private val liste
                 override fun onMonthSelected(monthYear: String) {
                     binding.txtMonthYear.setText(monthYear)
                 }
-            }, DATE_TIME_FORMAT)
+            }, REMINDER_DATE_TIME_FORMAT)
         }
 
         binding.btnAdd.setOnClickListener {
