@@ -158,6 +158,9 @@ object DateUtils {
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
+        // Add 1 hour to the current time
+        calendar.add(Calendar.HOUR_OF_DAY, 1)
+
         val datePickerDialog = DatePickerDialog(
             context,
             { _, selectedYear, selectedMonth, selectedDay ->
@@ -184,7 +187,8 @@ object DateUtils {
             month,
             day
         )
-
+        // Set the minimum date to 1 hour from now
+        datePickerDialog.datePicker.minDate = calendar.timeInMillis
         datePickerDialog.show()
     }
 }
