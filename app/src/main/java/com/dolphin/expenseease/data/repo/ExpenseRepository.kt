@@ -33,6 +33,10 @@ class ExpenseRepository @Inject constructor(
         return expenseDao.getTotalAmountSpentWithDate(startDate, endDate)
     }
 
+    suspend fun getTotalAmountSpentToday(startDate: String): Double {
+        return expenseDao.getTotalAmountSpentToday(startDate)
+    }
+
     fun getAllBudgets(): LiveData<List<Budget>> = budgetDao.getAll()
 
     suspend fun insertBudget(budget: Budget) = budgetDao.insert(budget)

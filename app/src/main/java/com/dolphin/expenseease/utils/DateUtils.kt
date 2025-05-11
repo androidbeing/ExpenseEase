@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.view.View
 import com.dolphin.expenseease.listeners.MonthListener
+import com.dolphin.expenseease.utils.Constants.SQLITE_DATE_FORMAT
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -50,7 +51,7 @@ object DateUtils {
 
     fun getTodayDate(): String {
         val currentDate = Date()
-        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val formatter = SimpleDateFormat(SQLITE_DATE_FORMAT, Locale.getDefault())
         return formatter.format(currentDate)
     }
 
@@ -62,6 +63,11 @@ object DateUtils {
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
         return calendar.timeInMillis
+    }
+
+    fun convertMillisToDateFormat(millis: Long, format: String): String {
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
+        return sdf.format(Date(millis))
     }
 
     fun getCurrentTimeInMillis(): Long {

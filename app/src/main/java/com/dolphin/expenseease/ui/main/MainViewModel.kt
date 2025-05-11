@@ -26,9 +26,9 @@ class MainViewModel @Inject constructor(
     private val _totalAmountThisMonth = MutableLiveData<Double>()
     val totalAmountThisMonth: LiveData<Double> get() = _totalAmountThisMonth
 
-    fun fetchTotalAmountSpent(startDate: Long, endDate: Long) = viewModelScope.launch {
+    fun fetchTotalAmountSpent(startDate: String) = viewModelScope.launch {
         val totalAmount = withContext(Dispatchers.IO) {
-            repository.getTotalAmountSpent(startDate, endDate)
+            repository.getTotalAmountSpentToday(startDate)
         }
         _totalAmountSpent.postValue(totalAmount?.toDouble() ?: 0.0) // Default to 0.0 if null
     }

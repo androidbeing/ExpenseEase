@@ -23,11 +23,17 @@ interface ExpenseDao {
     @Query("SELECT SUM(amount) FROM expense WHERE date BETWEEN :startDate AND :endDate")
     suspend fun getTotalAmountSpent(startDate: Long, endDate: Long): Double
 
-    /*@Query("SELECT SUM(amount) FROM expense WHERE strftime('%s', date) * 1000 BETWEEN :startDate AND :endDate")
-    suspend fun getTotalAmountSpentWithDate(startDate: Long, endDate: Long): Double*/
-
-    @Query("SELECT SUM(amount) FROM expense WHERE strftime('%s', substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2)) * 1000 BETWEEN :startDate AND :endDate")
+    @Query("SELECT IFNULL(SUM(amount), 0.0) FROM expense WHERE strftime('%s', date) * 1000 BETWEEN :startDate AND :endDate")
     suspend fun getTotalAmountSpentWithDate(startDate: Long, endDate: Long): Double
+
+    /*@Query("SELECT SUM(amount) FROM expense WHERE strftime('%s', substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2)) * 1000 BETWEEN :startDate AND :endDate")
+    suspend fun getTotalAmountSpentWithDate(startDate: Long, endDate: Long): Double
+
+    @Query("SELECT IFNULL(SUM(amount), 0.0) FROM expense WHERE strftime('%s', substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2)) * 1000 BETWEEN :startDate AND :endDate")
+    suspend fun getTotalAmountSpentWithDate(startDate: Long, endDate: Long): Double */
+
+    @Query("SELECT IFNULL(SUM(amount), 0.0) FROM expense WHERE date = :todayDate")
+    fun getTotalAmountSpentToday(todayDate: String): Double
 
     @Query("UPDATE expense SET amount = :amount WHERE id = :id")
     fun updateAmountById(id: Int, amount: Double)

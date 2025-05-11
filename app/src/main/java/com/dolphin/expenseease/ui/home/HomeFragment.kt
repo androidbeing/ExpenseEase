@@ -15,7 +15,9 @@ import com.dolphin.expenseease.listeners.AddExpenseListener
 import com.dolphin.expenseease.listeners.ExpenseEditListener
 import com.dolphin.expenseease.listeners.OnClickAlertListener
 import com.dolphin.expenseease.ui.main.MainViewModel
+import com.dolphin.expenseease.utils.Constants.SQLITE_DATE_FORMAT
 import com.dolphin.expenseease.utils.CurrencyManager
+import com.dolphin.expenseease.utils.DateUtils.convertMillisToDateFormat
 import com.dolphin.expenseease.utils.DateUtils.getStartOfCurrentMonthInMillis
 import com.dolphin.expenseease.utils.DateUtils.getTodayStartInMillis
 import com.dolphin.expenseease.utils.DialogUtils.showAlertDialog
@@ -112,7 +114,8 @@ class HomeFragment : Fragment() {
         val startWeekAgoDate = getStartOfCurrentMonthInMillis()
         val endDate = System.currentTimeMillis()
 
-        viewModel.fetchTotalAmountSpent(startDate, endDate)
+        val todayDate = convertMillisToDateFormat(startDate, SQLITE_DATE_FORMAT)
+        viewModel.fetchTotalAmountSpent(todayDate)
         viewModel.fetchTotalAmountThisMonth(startWeekAgoDate, endDate)
 
         viewModel.getLatestBalance().observe(viewLifecycleOwner) { walletLatest ->
