@@ -87,10 +87,21 @@ class SyncWorker @AssistedInject constructor(
     ) {
         var spreadsheetId = PreferenceHelper.getString(SPREAD_SHEET_ID, null)
 
+        // Check if spreadsheet exists, if not create a new one
+        if (spreadsheetId != null) {
+            val exists = sheetsServiceHelper.spreadsheetExists(spreadsheetId)
+            if (!exists) {
+                Log.i("SyncWorker", "Spreadsheet $spreadsheetId was deleted, creating new one")
+                spreadsheetId = null // Force creation of new sheet
+            }
+        }
+
         // Create spreadsheet if it doesn't exist
         if (spreadsheetId == null) {
+            Log.i("SyncWorker", "Creating new spreadsheet: ${getCurrentYearSheetName()}")
             spreadsheetId = sheetsServiceHelper.createSpreadsheet(getCurrentYearSheetName())
             sheetsServiceHelper.setupSpreadSheet(spreadsheetId)
+            Log.i("SyncWorker", "Created new spreadsheet with ID: $spreadsheetId")
         }
 
         // Prepare and write expense data
@@ -164,8 +175,12 @@ class SyncWorker @AssistedInject constructor(
         newData: List<List<Any>>,
         idColumnIndex: Int
     ) {
+        Log.i("SyncWorker", "Starting sync for $sheetName with ${newData.size} records")
+
         // Read existing data
-        val existingData = sheetsServiceHelper.readData(spreadsheetId, "$sheetName!A:Z") ?: emptyList()
+        val existingData = sheetsServiceHelper.readData(spreadsheetId, "$sheetName!A:Z")
+
+        Log.i("SyncWorker", "$sheetName: Read ${existingData.size} existing rows (including header)")
 
         if (existingData.isEmpty()) {
             // No existing data, write headers and data
@@ -177,35 +192,54 @@ class SyncWorker @AssistedInject constructor(
             }
             val allData = headers + newData
             sheetsServiceHelper.writeData(spreadsheetId, "$sheetName!A1", allData)
+            Log.i("SyncWorker", "Created new $sheetName sheet with ${newData.size} rows")
         } else {
             // Build a map of existing IDs to row numbers
-            val existingIds = mutableMapOf<Any, Int>()
+            val existingIds = mutableMapOf<String, Int>()
             existingData.forEachIndexed { index, row ->
                 if (index > 0 && row.isNotEmpty()) { // Skip header row
-                    val id = row.getOrNull(idColumnIndex)
-                    if (id != null) {
+                    val id = row.getOrNull(idColumnIndex)?.toString()
+                    if (id != null && id.isNotEmpty()) {
                         existingIds[id] = index + 1 // 1-based row number
                     }
                 }
             }
 
-            // Process each new data row
+            Log.i("SyncWorker", "$sheetName: Found ${existingIds.size} existing records")
+
+            // Separate data into updates and new additions
+            val rowsToUpdate = mutableListOf<Pair<Int, List<Any>>>()
+            val rowsToAppend = mutableListOf<List<Any>>()
+
             newData.forEach { row ->
-                val id = row.getOrNull(idColumnIndex)
-                if (id != null) {
+                val id = row.getOrNull(idColumnIndex)?.toString()
+                if (id != null && id.isNotEmpty()) {
                     val existingRowNumber = existingIds[id]
                     if (existingRowNumber != null) {
-                        // Update existing row
-                        val range = "$sheetName!A$existingRowNumber"
-                        sheetsServiceHelper.writeData(spreadsheetId, range, listOf(row))
+                        // Will update existing row
+                        rowsToUpdate.add(Pair(existingRowNumber, row))
                     } else {
-                        // Append new row
-                        val nextRow = existingData.size + 1
-                        val range = "$sheetName!A$nextRow"
-                        sheetsServiceHelper.writeData(spreadsheetId, range, listOf(row))
+                        // Will append new row
+                        rowsToAppend.add(row)
                     }
                 }
             }
+
+            Log.i("SyncWorker", "$sheetName: Will update ${rowsToUpdate.size} rows, append ${rowsToAppend.size} rows")
+
+            // Update existing rows one by one
+            rowsToUpdate.forEach { (rowNumber, row) ->
+                val range = "$sheetName!A$rowNumber"
+                sheetsServiceHelper.writeData(spreadsheetId, range, listOf(row))
+            }
+
+            // Append all new rows at once
+            if (rowsToAppend.isNotEmpty()) {
+                sheetsServiceHelper.appendData(spreadsheetId, "$sheetName!A:A", rowsToAppend)
+                Log.i("SyncWorker", "Appended ${rowsToAppend.size} new rows to $sheetName")
+            }
+
+            Log.i("SyncWorker", "$sheetName sync complete: Updated ${rowsToUpdate.size}, Appended ${rowsToAppend.size}")
         }
     }
 }

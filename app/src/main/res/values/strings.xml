@@ -62,7 +62,7 @@
     <string name="successfully_logout_from">Successfully signed out from %s</string>
     <string name="sync_success">Data synced successfully!</string>
     <string name="sync_fail">Data Sync failed!</string>
-    <string name="sign_out">Sign out from google account</string>
+    <string name="sign_out">Sign out</string>
 
     <string name="default_web_client_id">161874295130-cj70qk48ndrd5ugkp60sr6e42dai4ajo.apps.googleusercontent.com</string>
 
