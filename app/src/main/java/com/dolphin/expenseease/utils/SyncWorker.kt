@@ -87,7 +87,7 @@ class SyncWorker @AssistedInject constructor(
     ) {
         var spreadsheetId = PreferenceHelper.getString(SPREAD_SHEET_ID, null)
 
-        // Check if spreadsheet exists, if not create a new one
+        // Check if spreadsheet exists, if not, create a new one
         if (spreadsheetId != null) {
             try {
                 val exists = sheetsServiceHelper.spreadsheetExists(spreadsheetId)

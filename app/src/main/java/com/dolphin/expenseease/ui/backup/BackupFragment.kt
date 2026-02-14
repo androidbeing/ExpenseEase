@@ -185,7 +185,7 @@ class BackupFragment : Fragment() {
         var spreadsheetId = PreferenceHelper.getString(SPREAD_SHEET_ID, null)
         lifecycleScope.launch {
             try {
-                // Check if spreadsheet exists, if not create a new one
+                // Check if spreadsheet exists, if not, create a new one
                 if (spreadsheetId != null) {
                     try {
                         val exists = sheetsServiceHelper.spreadsheetExists(spreadsheetId)
