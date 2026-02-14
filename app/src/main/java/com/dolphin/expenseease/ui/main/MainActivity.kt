@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -23,12 +25,14 @@ import androidx.work.WorkManager
 import com.dolphin.expenseease.R
 import com.dolphin.expenseease.data.db.AppDatabase
 import com.dolphin.expenseease.databinding.ActivityMainBinding
+import com.dolphin.expenseease.utils.AppUpdateHelper
 import com.dolphin.expenseease.utils.Constants.EMAIL_ID
 import com.dolphin.expenseease.utils.Constants.USER_NAME
 import com.dolphin.expenseease.utils.GoogleSpreadSheetHelper
 import com.dolphin.expenseease.utils.PreferenceHelper
 import com.dolphin.expenseease.utils.SyncWorker
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,9 +43,17 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-
+    private lateinit var appUpdateHelper: AppUpdateHelper
 
     private val RC_SIGN_IN = 500
+
+    // Activity result launcher for In-App Updates
+    private val updateLauncher: ActivityResultLauncher<IntentSenderRequest> =
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            if (result.resultCode != Activity.RESULT_OK) {
+                Log.w("MainActivity", "Update flow failed! Result code: ${result.resultCode}")
+            }
+        }
 
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -84,8 +96,7 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        // ...existing code...
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home,
@@ -102,6 +113,57 @@ class MainActivity : AppCompatActivity() {
 
         initNavHeader()
         setupAutoSync()
+        setupInAppUpdate()
+    }
+
+    private fun setupInAppUpdate() {
+        // Initialize app update helper
+        appUpdateHelper = AppUpdateHelper(this)
+
+        // Set up callbacks
+        appUpdateHelper.onDownloadComplete = {
+            showUpdateDownloadedSnackbar()
+        }
+
+        appUpdateHelper.onUpdateFailed = {
+            Log.e("MainActivity", "App update failed")
+        }
+
+        appUpdateHelper.onUpdateCanceled = {
+            Log.w("MainActivity", "App update canceled by user")
+        }
+
+        // Check for updates
+        appUpdateHelper.checkForUpdates(updateLauncher)
+    }
+
+    private fun showUpdateDownloadedSnackbar() {
+        Snackbar.make(
+            binding.root,
+            "An update has been downloaded.",
+            Snackbar.LENGTH_INDEFINITE
+        ).apply {
+            setAction("INSTALL") {
+                appUpdateHelper.completeUpdate()
+            }
+            show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Check if update is in progress when app is resumed
+        if (::appUpdateHelper.isInitialized) {
+            appUpdateHelper.checkUpdateOnResume(updateLauncher)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Cleanup update helper
+        if (::appUpdateHelper.isInitialized) {
+            appUpdateHelper.cleanup()
+        }
     }
 
     private fun setupAutoSync() {
