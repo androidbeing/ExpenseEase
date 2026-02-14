@@ -185,6 +185,20 @@ class BackupFragment : Fragment() {
         var spreadsheetId = PreferenceHelper.getString(SPREAD_SHEET_ID, null)
         lifecycleScope.launch {
             try {
+                // Check if spreadsheet exists, if not, create a new one
+                if (spreadsheetId != null) {
+                    try {
+                        val exists = sheetsServiceHelper.spreadsheetExists(spreadsheetId)
+                        if (!exists) {
+                            Log.i("BackupFragment", "Spreadsheet $spreadsheetId was deleted, creating new one")
+                            spreadsheetId = null
+                        }
+                    } catch (e: Exception) {
+                        // If we can't verify existence (network/auth issues), assume it exists and let the sync fail naturally
+                        Log.w("BackupFragment", "Could not verify spreadsheet existence, proceeding with sync: ${e.message}")
+                    }
+                }
+                
                 // Create spreadsheet if it doesn't exist
                 if (spreadsheetId == null) {
                     spreadsheetId = sheetsServiceHelper.createSpreadsheet(getCurrentYearSheetName())
