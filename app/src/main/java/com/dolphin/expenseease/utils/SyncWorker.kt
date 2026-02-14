@@ -87,6 +87,15 @@ class SyncWorker @AssistedInject constructor(
     ) {
         var spreadsheetId = PreferenceHelper.getString(SPREAD_SHEET_ID, null)
 
+        // Check if spreadsheet exists, if not create a new one
+        if (spreadsheetId != null) {
+            val exists = sheetsServiceHelper.spreadsheetExists(spreadsheetId)
+            if (!exists) {
+                Log.i("SyncWorker", "Spreadsheet $spreadsheetId was deleted, creating new one")
+                spreadsheetId = null
+            }
+        }
+
         // Create spreadsheet if it doesn't exist
         if (spreadsheetId == null) {
             spreadsheetId = sheetsServiceHelper.createSpreadsheet(getCurrentYearSheetName())

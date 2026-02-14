@@ -44,8 +44,25 @@ class SheetsServiceHelper @Inject constructor(
     suspend fun writeData(spreadsheetId: String, range: String, values: List<List<Any>>) = withContext(Dispatchers.IO) {
         sheetsService.spreadsheets().values()
             .update(spreadsheetId, range, ValueRange().setValues(values))
-            .setValueInputOption("RAW")
+            .setValueInputOption("USER_ENTERED")
             .execute()
+    }
+
+    suspend fun appendData(spreadsheetId: String, range: String, values: List<List<Any>>) = withContext(Dispatchers.IO) {
+        sheetsService.spreadsheets().values()
+            .append(spreadsheetId, range, ValueRange().setValues(values))
+            .setValueInputOption("USER_ENTERED")
+            .setInsertDataOption("INSERT_ROWS")
+            .execute()
+    }
+
+    suspend fun spreadsheetExists(spreadsheetId: String): Boolean = withContext(Dispatchers.IO) {
+        try {
+            sheetsService.spreadsheets().get(spreadsheetId).execute()
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     suspend fun readData(spreadsheetId: String, range: String): List<List<Any>> = withContext(Dispatchers.IO) {
