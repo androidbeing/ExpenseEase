@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="app_screen_bg">#F6F6F6</color>
+    <color name="surface_light">#FAFAFA</color>
 
     <color name="milk_white">#F5F5F5</color>
     <color name="dark">#000000</color>

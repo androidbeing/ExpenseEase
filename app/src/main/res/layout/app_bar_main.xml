@@ -10,13 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
+        android:background="@color/white"
+        app:elevation="0dp"
         android:theme="@style/Theme.ExpenseEase.AppBarOverlay">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/white"
+            app:titleTextColor="@color/colorPrimaryText"
             app:popupTheme="@style/Theme.ExpenseEase.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>

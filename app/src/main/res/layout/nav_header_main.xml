@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
-    android:background="@drawable/side_nav_bar"
     android:gravity="bottom|center"
+    android:background="@color/app_screen_bg"
     android:orientation="vertical"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
@@ -21,6 +21,7 @@
         android:id="@+id/txtTagLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/purple_200"
         android:fontFamily="@font/open_sans_semibold"
         android:text="@string/nav_header_subtitle" />
 
@@ -31,6 +32,7 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/nav_header_title"
         android:textSize="14sp"
+        android:textColor="@color/purple_200"
         android:fontFamily="@font/open_sans"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -39,5 +41,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
+        android:textColor="@color/purple_200"
         android:fontFamily="@font/open_sans" />
 </LinearLayout>
