@@ -23,6 +23,8 @@ playServicesAuth = "20.4.1"
 googleSheetsApi = "v4-rev20220927-2.0.0"
 google-api-client-jackson2 = "1.35.2"
 
+mpandroidchart = "v3.1.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,6 +55,7 @@ play-services-auth = { group = "com.google.android.gms", name = "play-services-a
 google-api-client-android = { group = "com.google.api-client", name = "google-api-client-android", version.ref = "googleApiClient" }
 google-api-client-jackson2 = { group = "com.google.api-client", name = "google-api-client-jackson2", version.ref = "google-api-client-jackson2" }
 googleSheetsApi = {  module = "com.google.apis:google-api-services-sheets", version.ref = "googleSheetsApi" }
+mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -41,6 +41,12 @@ interface ExpenseDao {
     @Query("SELECT SUM(amount) FROM expense WHERE created_at BETWEEN :startTime AND :endTime")
     fun getExpenseAmountAddedBetween(startTime: Long, endTime: Long): Double
 
+    @Query("SELECT date, SUM(amount) as totalAmount FROM expense WHERE strftime('%Y-%m', date) = :monthYear GROUP BY date ORDER BY date")
+    fun getDailyExpensesForMonth(monthYear: String): LiveData<List<DailyExpense>>
+
+    @Query("SELECT SUM(amount) FROM expense WHERE strftime('%Y-%m', date) = :monthYear")
+    suspend fun getTotalExpensesForMonth(monthYear: String): Double?
+
     @Delete
     fun delete(expense: Expense)
 }

@@ -10,6 +10,8 @@ pluginManagement {
         gradlePluginPortal {
             url "https://plugins.gradle.org/m2/"
         }
+
+        maven { url 'https://jitpack.io' }
     }
 }
 dependencyResolutionManagement {
@@ -22,6 +24,7 @@ dependencyResolutionManagement {
         mavenCentral {
             url "https://repo1.maven.org/maven2/"
         }
+        maven { url 'https://jitpack.io' }
     }
 }
 

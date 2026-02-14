@@ -3,6 +3,7 @@ package com.dolphin.expenseease.data.repo
 import androidx.lifecycle.LiveData
 import com.dolphin.expenseease.data.db.budget.Budget
 import com.dolphin.expenseease.data.db.budget.BudgetDao
+import com.dolphin.expenseease.data.db.expense.DailyExpense
 import com.dolphin.expenseease.data.db.expense.Expense
 import com.dolphin.expenseease.data.db.expense.ExpenseDao
 import com.dolphin.expenseease.data.db.reminder.Reminder
@@ -35,6 +36,14 @@ class ExpenseRepository @Inject constructor(
 
     suspend fun getTotalAmountSpentToday(startDate: String): Double {
         return expenseDao.getTotalAmountSpentToday(startDate)
+    }
+
+    fun getDailyExpensesForMonth(monthYear: String): LiveData<List<DailyExpense>> {
+        return expenseDao.getDailyExpensesForMonth(monthYear)
+    }
+
+    suspend fun getTotalExpensesForMonth(monthYear: String): Double? {
+        return expenseDao.getTotalExpensesForMonth(monthYear)
     }
 
     fun getAllBudgets(): LiveData<List<Budget>> = budgetDao.getAll()
