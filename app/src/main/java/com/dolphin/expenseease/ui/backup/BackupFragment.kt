@@ -120,7 +120,7 @@ class BackupFragment : Fragment() {
         binding.btnSync.setOnClickListener {
             checkAndSyncData()
         }
-        binding.imgSignout.setOnClickListener {
+        binding.groupSignOut.setOnClickListener {
             googleSignInHelper.signOut()
         }
     }
@@ -144,7 +144,7 @@ class BackupFragment : Fragment() {
                     if (account != null) {
                         PreferenceHelper.putString(USER_NAME, "${account.displayName}")
                         PreferenceHelper.putString(EMAIL_ID, "${account.email}")
-                        binding.imgSignout.visibility = View.VISIBLE
+                        binding.groupSignOut.visibility = View.VISIBLE
                         Log.i("AAA", "Google Auth Success: ${account.email}")
                         lifecycleScope.launch(Dispatchers.IO) {
                             sheetsServiceHelper = SheetsServiceHelper(requireActivity(), account)
@@ -160,7 +160,7 @@ class BackupFragment : Fragment() {
                 }
 
                 override fun onSuccess() {
-                    binding.imgSignout.visibility = View.INVISIBLE
+                    binding.groupSignOut.visibility = View.GONE
                     val emailId = PreferenceHelper.getString(EMAIL_ID) ?: ""
                     val alert = Alert(
                         getString(R.string.lbl_signout),
@@ -170,8 +170,8 @@ class BackupFragment : Fragment() {
                     )
                     showAlertDialog(requireActivity(), alert, object : OnClickAlertListener {
                         override fun onAcknowledge(isOkay: Boolean) {
-                            PreferenceHelper.putString(USER_NAME, "")
-                            PreferenceHelper.putString(EMAIL_ID, "")
+                            PreferenceHelper.putString(USER_NAME, "NA")
+                            PreferenceHelper.putString(EMAIL_ID, "NA")
                             setLabel()
                         }
                     })
@@ -185,13 +185,17 @@ class BackupFragment : Fragment() {
         var spreadsheetId = PreferenceHelper.getString(SPREAD_SHEET_ID, null)
         lifecycleScope.launch {
             try {
-                // Prepare data for Expenses
-                val expenseValues = mutableListOf<List<Any>>().apply {
-                    if (spreadsheetId == null) {
-                        add(listOf("Date", "Type", "Amount", "Notes", "CreatedAt", "UpdatedAt"))
-                    }
-                    addAll(expenseList.map { expense ->
+                // Create spreadsheet if it doesn't exist
+                if (spreadsheetId == null) {
+                    spreadsheetId = sheetsServiceHelper.createSpreadsheet(getCurrentYearSheetName())
+                    sheetsServiceHelper.setupSpreadSheet(spreadsheetId)
+                }
+
+                // Sync Expenses
+                if (expenseList.isNotEmpty()) {
+                    val expenseValues = expenseList.map { expense ->
                         listOf(
+                            expense.id,
                             expense.date,
                             expense.type,
                             expense.amount,
@@ -199,92 +203,39 @@ class BackupFragment : Fragment() {
                             expense.createdAt,
                             expense.updatedAt
                         )
-                    })
+                    }
+                    appendOrUpdateData(spreadsheetId, "Expenses", expenseValues, 0)
                 }
 
-                // Prepare data for Budgets
-                val budgetValues = mutableListOf<List<Any>>().apply {
-                    if (spreadsheetId == null) {
-                        add(listOf("Type", "Amount", "MonthYear", "CreatedAt", "UpdatedAt"))
-                    }
-                    addAll(budgetList.map { budget ->
+                // Sync Budgets
+                if (budgetList.isNotEmpty()) {
+                    val budgetValues = budgetList.map { budget ->
                         listOf(
+                            budget.id,
                             budget.type,
                             budget.amount,
                             budget.monthYear,
                             budget.createdAt,
                             budget.updatedAt
                         )
-                    })
+                    }
+                    appendOrUpdateData(spreadsheetId, "Budgets", budgetValues, 0)
                 }
 
-                // Prepare data for Wallets
-                val walletValues = mutableListOf<List<Any>>().apply {
-                    if (spreadsheetId == null) {
-                        add(listOf("Balance", "AddedAmount", "Notes", "CreatedAt", "UpdatedAt"))
-                    }
-                    addAll(walletList.map { wallet ->
+                // Sync Wallets
+                if (walletList.isNotEmpty()) {
+                    val walletValues = walletList.map { wallet ->
                         listOf(
+                            wallet.id,
                             wallet.balance,
                             wallet.addedAmount,
                             wallet.notes,
                             wallet.createdAt,
                             wallet.updatedAt
                         )
-                    })
+                    }
+                    appendOrUpdateData(spreadsheetId, "Wallet", walletValues, 0)
                 }
-
-                // These will automatically use IO dispatcher from SheetsServiceHelper
-                if (spreadsheetId == null) {
-                    spreadsheetId =
-                        sheetsServiceHelper.createSpreadsheet("${getCurrentYearSheetName()}")
-                    sheetsServiceHelper.setupSpreadSheet(spreadsheetId)
-                }
-
-                // Write data to Expenses sheet
-                val existingExpenseData =
-                    sheetsServiceHelper.readData(spreadsheetId, "Expenses!A1:F") ?: emptyList()
-                val nextExpenseRow =
-                    if (existingExpenseData.isNotEmpty() && existingExpenseData is List<*>) {
-                        existingExpenseData[0].size + 1
-                    } else {
-                        1 // Start from the first row if no data exists
-                    }
-                sheetsServiceHelper.writeData(
-                    spreadsheetId,
-                    "Expenses!A$nextExpenseRow:F${nextExpenseRow + expenseValues.size - 1}",
-                    expenseValues
-                )
-
-                // Write data to Budgets sheet
-                val existingBudgetData =
-                    sheetsServiceHelper.readData(spreadsheetId, "Budgets!A1:E") ?: emptyList()
-                val nextBudgetRow =
-                    if (existingBudgetData.isNotEmpty() && existingBudgetData is List<*>) {
-                        existingBudgetData[0].size + 1
-                    } else {
-                        1 // Start from the first row if no data exists
-                    }
-                sheetsServiceHelper.writeData(
-                    spreadsheetId,
-                    "Budgets!A$nextBudgetRow:E${nextBudgetRow + budgetValues.size - 1}",
-                    budgetValues
-                )
-
-                // Write data to Wallet sheet
-                val existingWalletData =
-                    sheetsServiceHelper.readData(spreadsheetId, "Wallet!A1:E") ?: emptyList()
-                val nextWalletRow =
-                    if (existingWalletData.isNotEmpty() && existingWalletData is List<*>) {
-                        existingWalletData[0].size + 1
-                    } else {
-                        1 // Start from the first row if no data exists
-                    }
-                sheetsServiceHelper.writeData(
-                    spreadsheetId,
-                    "Wallet!A$nextWalletRow:E${nextWalletRow + walletValues.size - 1}",
-                    walletValues
-                )
 
                 Log.i("AAA", "Data written successfully to spreadsheet")
                 val spreadsheetUrl = "https://docs.google.com/spreadsheets/d/$spreadsheetId"
@@ -302,12 +253,66 @@ class BackupFragment : Fragment() {
                 binding.btnSync.isEnabled = false
                 binding.progressBar.visibility = View.GONE
                 ToastUtils.showLong(requireActivity(), getString(R.string.sync_success))
+                setLabel() // Refresh the UI with new sync time
                 Log.i("AAA", "$spreadsheetUrl")
             } catch (e: Exception) {
                 ToastUtils.showLong(requireActivity(), getString(R.string.sync_fail))
                 binding.progressBar.visibility = View.GONE
                 Log.i("AAA", "Error during export: ${e.message}")
                 Log.e("SheetsExport", "Export failed", e)
+            }
+        }
+    }
+
+    private suspend fun appendOrUpdateData(
+        spreadsheetId: String,
+        sheetName: String,
+        newData: List<List<Any>>,
+        idColumnIndex: Int
+    ) {
+        // Read existing data
+        val existingData = sheetsServiceHelper.readData(spreadsheetId, "$sheetName!A:Z") ?: emptyList()
+
+        if (existingData.isEmpty()) {
+            // No existing data, write headers and data
+            val headers = when (sheetName) {
+                "Expenses" -> listOf(listOf("ID", "Date", "Type", "Amount", "Notes", "CreatedAt", "UpdatedAt"))
+                "Budgets" -> listOf(listOf("ID", "Type", "Amount", "MonthYear", "CreatedAt", "UpdatedAt"))
+                "Wallet" -> listOf(listOf("ID", "Balance", "AddedAmount", "Notes", "CreatedAt", "UpdatedAt"))
+                else -> emptyList()
+            }
+            val allData = headers + newData
+            sheetsServiceHelper.writeData(spreadsheetId, "$sheetName!A1", allData)
+        } else {
+            // Build a map of existing IDs to row numbers
+            val existingIds = mutableMapOf<Any, Int>()
+            existingData.forEachIndexed { index, row ->
+                if (index > 0 && row.isNotEmpty()) { // Skip header row
+                    val id = row.getOrNull(idColumnIndex)
+                    if (id != null) {
+                        existingIds[id] = index + 1 // 1-based row number
+                    }
+                }
+            }
+
+            // Process each new data row
+            newData.forEach { row ->
+                val id = row.getOrNull(idColumnIndex)
+                if (id != null) {
+                    val existingRowNumber = existingIds[id]
+                    if (existingRowNumber != null) {
+                        // Update existing row
+                        val range = "$sheetName!A$existingRowNumber"
+                        sheetsServiceHelper.writeData(spreadsheetId, range, listOf(row))
+                        Log.i("AAA", "Updated $sheetName row $existingRowNumber for ID $id")
+                    } else {
+                        // Append new row
+                        val nextRow = existingData.size + 1
+                        val range = "$sheetName!A$nextRow"
+                        sheetsServiceHelper.writeData(spreadsheetId, range, listOf(row))
+                        Log.i("AAA", "Appended new row to $sheetName at row $nextRow for ID $id")
+                    }
+                }
             }
         }
     }

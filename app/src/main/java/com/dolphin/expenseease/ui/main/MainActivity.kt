@@ -15,6 +15,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.dolphin.expenseease.R
 import com.dolphin.expenseease.data.db.AppDatabase
 import com.dolphin.expenseease.databinding.ActivityMainBinding
@@ -22,11 +27,13 @@ import com.dolphin.expenseease.utils.Constants.EMAIL_ID
 import com.dolphin.expenseease.utils.Constants.USER_NAME
 import com.dolphin.expenseease.utils.GoogleSpreadSheetHelper
 import com.dolphin.expenseease.utils.PreferenceHelper
+import com.dolphin.expenseease.utils.SyncWorker
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -94,6 +101,29 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         initNavHeader()
+        setupAutoSync()
+    }
+
+    private fun setupAutoSync() {
+        // Setup periodic work request for auto-sync every 12 hours
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val syncWorkRequest = PeriodicWorkRequestBuilder<SyncWorker>(
+            12, TimeUnit.HOURS,
+            15, TimeUnit.MINUTES // Flex interval
+        )
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            "AutoSyncWork",
+            ExistingPeriodicWorkPolicy.KEEP,
+            syncWorkRequest
+        )
+
+        Log.i("MainActivity", "Auto-sync scheduled: Every 12 hours")
     }
 
     /*private fun syncInSheets() {

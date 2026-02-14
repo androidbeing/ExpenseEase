@@ -120,12 +120,12 @@
                 android:fontFamily="@font/open_sans_semibold"
                 android:maxLength="100"
                 android:text="NA"
-                android:layout_marginEnd="40dp"
                 android:textColor="@color/purple_200"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/valEmailId" />
+                app:layout_constraintBottom_toBottomOf="@+id/lblCurrencySymbol"
+                app:layout_constraintEnd_toEndOf="@+id/valEmailId"
+                app:layout_constraintStart_toStartOf="@+id/valEmailId"
+                app:layout_constraintTop_toTopOf="@+id/lblCurrencySymbol" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"
@@ -138,11 +138,34 @@
                 android:id="@+id/imgSignout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="6dp"
-                android:visibility="invisible"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/lblCurrencySymbol"
+                app:layout_constraintVertical_bias="1.0"
+                app:srcCompat="@drawable/ic_logout"
+                app:tint="@color/purple_200" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_out"
+                android:textColor="@color/purple_200"
+                app:layout_constraintBottom_toBottomOf="@+id/imgSignout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_menu_camera" />
+                app:layout_constraintTop_toTopOf="@+id/imgSignout"
+                app:layout_constraintVertical_bias="0.222" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupSignOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="imgSignout,textView"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -154,10 +177,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:drawableTint="@color/white"
-        android:drawableLeft="@drawable/ic_cloud_sync"
         android:background="@drawable/bg_btn_positive"
+        android:drawableLeft="@drawable/ic_cloud_sync"
+        android:drawableTint="@color/white"
         android:text="@string/sync_to_google_sheets"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
