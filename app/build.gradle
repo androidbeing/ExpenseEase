@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-kapt'
     alias(libs.plugins.hilt.plugin)
     alias(libs.plugins.kotlin.android.ksp)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -118,6 +120,11 @@ dependencies {
     implementation libs.work.runtime.ktx
     implementation libs.hilt.work
     kapt libs.hilt.work.compiler
+
+    // Firebase BoM and libraries
+    implementation platform(libs.firebase.bom)
+    implementation libs.firebase.crashlytics
+    implementation libs.firebase.analytics
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit

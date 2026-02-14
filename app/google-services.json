@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "939388851411",
+    "project_id": "budgetbuddy-75877",
+    "storage_bucket": "budgetbuddy-75877.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939388851411:android:4d5f0e4cb4b9821ba5f026",
+        "android_client_info": {
+          "package_name": "com.dolphin.budgetbuddy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZUEsSu56sg13AfcTTLyt1FUGEsg7CKVM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939388851411:android:0a4099f8224515e5a5f026",
+        "android_client_info": {
+          "package_name": "com.dolphin.expenseease"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZUEsSu56sg13AfcTTLyt1FUGEsg7CKVM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

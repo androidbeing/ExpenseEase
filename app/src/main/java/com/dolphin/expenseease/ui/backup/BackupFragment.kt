@@ -111,6 +111,7 @@ class BackupFragment : Fragment() {
     }
 
     private fun updateSyncButtonState() {
+        binding.btnSync.visibility = if (expenseList.isNotEmpty() || budgetList.isNotEmpty() || walletList.isNotEmpty()) View.VISIBLE else View.GONE
         binding.btnSync.isEnabled =
             expenseList.isNotEmpty() || budgetList.isNotEmpty() || walletList.isNotEmpty()
     }
