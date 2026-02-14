@@ -1,8 +1,10 @@
 package com.dolphin.expenseease.utils.google
 
 import android.content.Context
+import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.sheets.v4.Sheets
@@ -60,8 +62,18 @@ class SheetsServiceHelper @Inject constructor(
         try {
             sheetsService.spreadsheets().get(spreadsheetId).execute()
             true
+        } catch (e: GoogleJsonResponseException) {
+            // 404 means spreadsheet doesn't exist (deleted or never created)
+            if (e.statusCode == 404) {
+                Log.i("SheetsServiceHelper", "Spreadsheet $spreadsheetId not found (404)")
+                false
+            } else {
+                Log.e("SheetsServiceHelper", "Error checking spreadsheet existence: ${e.statusCode} - ${e.message}")
+                throw e
+            }
         } catch (e: Exception) {
-            false
+            Log.e("SheetsServiceHelper", "Unexpected error checking spreadsheet existence: ${e.message}", e)
+            throw e
         }
     }
 

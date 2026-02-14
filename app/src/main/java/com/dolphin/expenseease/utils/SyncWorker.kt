@@ -89,10 +89,15 @@ class SyncWorker @AssistedInject constructor(
 
         // Check if spreadsheet exists, if not create a new one
         if (spreadsheetId != null) {
-            val exists = sheetsServiceHelper.spreadsheetExists(spreadsheetId)
-            if (!exists) {
-                Log.i("SyncWorker", "Spreadsheet $spreadsheetId was deleted, creating new one")
-                spreadsheetId = null
+            try {
+                val exists = sheetsServiceHelper.spreadsheetExists(spreadsheetId)
+                if (!exists) {
+                    Log.i("SyncWorker", "Spreadsheet $spreadsheetId was deleted, creating new one")
+                    spreadsheetId = null
+                }
+            } catch (e: Exception) {
+                // If we can't verify existence (network/auth issues), assume it exists and let the sync fail naturally
+                Log.w("SyncWorker", "Could not verify spreadsheet existence, proceeding with sync: ${e.message}")
             }
         }
 
