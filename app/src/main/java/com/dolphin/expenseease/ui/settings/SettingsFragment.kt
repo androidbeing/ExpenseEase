@@ -27,7 +27,6 @@ class SettingsFragment: Fragment() {
 
         // Handle re-detect currency button click
         binding.btnRedetectCurrency.setOnClickListener {
-            CurrencyManager.clearCurrency()
             CurrencyManager.forceDetectAndSaveCurrency(requireContext())
             updateCurrencyDisplay()
         }
