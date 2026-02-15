@@ -7,10 +7,12 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.telephony.TelephonyManager
+import android.util.Log
 import androidx.core.content.ContextCompat
 
 object CurrencyManager {
 
+    private const val TAG = "CurrencyManager"
     private const val CURRENCY_NAME_KEY = "currency_name"
     private const val CURRENCY_SYMBOL_KEY = "currency_symbol"
     private const val CURRENCY_CODE_KEY = "currency_code"
@@ -24,7 +26,7 @@ object CurrencyManager {
     fun detectAndSaveCurrency(context: Context) {
         val alreadyDetected = PreferenceHelper.getBoolean(CURRENCY_DETECTED_KEY, false)
         if (alreadyDetected) {
-            println("Currency already detected, skipping auto-detection")
+            Log.d(TAG, "Currency already detected, skipping auto-detection")
             return
         }
         forceDetectAndSaveCurrency(context)
@@ -45,7 +47,7 @@ object CurrencyManager {
         PreferenceHelper.putString(CURRENCY_CODE_KEY, currencyCode)
         PreferenceHelper.putBoolean(CURRENCY_DETECTED_KEY, true)
 
-        println("Currency saved: $currencyName ($currencyCode) $currencySymbol")
+        Log.d(TAG, "Currency saved: $currencyName ($currencyCode) $currencySymbol")
     }
 
     /**
@@ -53,7 +55,7 @@ object CurrencyManager {
      */
     fun clearCurrency() {
         PreferenceHelper.putBoolean(CURRENCY_DETECTED_KEY, false)
-        println("Currency detection flag cleared")
+        Log.d(TAG, "Currency detection flag cleared")
     }
 
     /**
@@ -66,7 +68,7 @@ object CurrencyManager {
     private fun detectCurrency(context: Context): Currency {
         var countryCode: String? = null
         
-        println("=== Currency Detection Started ===")
+        Log.d(TAG, "=== Currency Detection Started ===")
         
         // Method 1: Try SIM card country (most reliable for mobile users)
         val hasPermission = ContextCompat.checkSelfPermission(
@@ -74,7 +76,7 @@ object CurrencyManager {
             Manifest.permission.READ_PHONE_STATE
         ) == PackageManager.PERMISSION_GRANTED
         
-        println("READ_PHONE_STATE permission: $hasPermission")
+        Log.d(TAG, "READ_PHONE_STATE permission: $hasPermission")
         
         if (hasPermission) {
             try {
@@ -83,7 +85,7 @@ object CurrencyManager {
                     // Try SIM country first
                     val simCountry = it.simCountryIso?.uppercase(Locale.getDefault())
                     if (!simCountry.isNullOrEmpty()) {
-                        println("SIM country code: $simCountry")
+                        Log.d(TAG, "SIM country code: $simCountry")
                         countryCode = simCountry
                     }
                     
@@ -91,20 +93,20 @@ object CurrencyManager {
                     if (countryCode.isNullOrEmpty()) {
                         val networkCountry = it.networkCountryIso?.uppercase(Locale.getDefault())
                         if (!networkCountry.isNullOrEmpty()) {
-                            println("Network country code: $networkCountry")
+                            Log.d(TAG, "Network country code: $networkCountry")
                             countryCode = networkCountry
                         }
                     }
                 }
             } catch (e: Exception) {
-                println("Error accessing TelephonyManager: ${e.message}")
+                Log.e(TAG, "Error accessing TelephonyManager: ${e.message}", e)
             }
         }
         
         // Method 3: Fallback to device locale (less reliable as it's based on language settings)
         if (countryCode.isNullOrEmpty()) {
             countryCode = Locale.getDefault().country
-            println("Using device locale country: $countryCode (Note: based on language settings)")
+            Log.d(TAG, "Using device locale country: $countryCode (Note: based on language settings)")
         }
         
         // Try to get currency for the detected country code
@@ -113,19 +115,19 @@ object CurrencyManager {
             try {
                 val locale = Locale("", countryCode)
                 currency = Currency.getInstance(locale)
-                println("Currency detected: ${currency.currencyCode} for country: $countryCode")
+                Log.d(TAG, "Currency detected: ${currency.currencyCode} for country: $countryCode")
             } catch (e: IllegalArgumentException) {
-                println("No currency found for country code: $countryCode")
+                Log.w(TAG, "No currency found for country code: $countryCode")
             }
         }
         
         // Method 4: Universal fallback to USD
         if (currency == null) {
-            println("Falling back to default currency: $DEFAULT_CURRENCY")
+            Log.d(TAG, "Falling back to default currency: $DEFAULT_CURRENCY")
             currency = Currency.getInstance(DEFAULT_CURRENCY)
         }
         
-        println("=== Currency Detection Complete: ${currency.currencyCode} ===")
+        Log.d(TAG, "=== Currency Detection Complete: ${currency.currencyCode} ===")
         return currency
     }
 
