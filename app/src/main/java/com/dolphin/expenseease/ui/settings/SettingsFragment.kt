@@ -23,6 +23,18 @@ class SettingsFragment: Fragment() {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        updateCurrencyDisplay()
+
+        // Handle re-detect currency button click
+        binding.btnRedetectCurrency.setOnClickListener {
+            CurrencyManager.forceDetectAndSaveCurrency(requireContext())
+            updateCurrencyDisplay()
+        }
+
+        return root
+    }
+
+    private fun updateCurrencyDisplay() {
         val currencyName = CurrencyManager.getCurrencyName(requireActivity())
         val currencySymbol = CurrencyManager.getCurrencySymbol(requireActivity())
         val currencyCode = CurrencyManager.getCurrencyCode(requireActivity())
@@ -30,8 +42,6 @@ class SettingsFragment: Fragment() {
         binding.valCurrencyName.text = currencyName
         binding.valCurrencyCode.text = currencyCode
         binding.valCurrencySymbol.text = currencySymbol
-
-        return root
     }
 
     override fun onDestroyView() {

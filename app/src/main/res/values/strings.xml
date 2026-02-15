@@ -51,6 +51,7 @@
     <string name="currency_name">Currency Name</string>
     <string name="currency_code">Currency Code</string>
     <string name="currency_symbol">Currency Symbol</string>
+    <string name="redetect_currency">Re-detect Currency</string>
     <string name="lbl_elapsed">Elapsed</string>
     <string name="lbl_upcoming">Upcoming</string>
     <string name="sync_to_google_sheets">Sync to Google Sheets</string>
